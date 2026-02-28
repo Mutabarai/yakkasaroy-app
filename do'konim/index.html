@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yakkasaroy Delivery App</title>
+    <style>
+        :root { --main: #800000; --bg: #f8f9fa; --white: #ffffff; --accent: #d4af37; --text: #333; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); color: var(--text); }
+        
+        .top-slogan { background: linear-gradient(135deg, #800000, #4a0000); color: #d4af37; padding: 12px; text-align: center; font-size: 14px; font-weight: bold; border-radius: 0 0 20px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 1100; text-transform: uppercase; }
+        header { background: var(--main); color: var(--white); padding: 20px; text-align: center; font-size: 24px; font-weight: bold; border-bottom: 3px solid var(--accent); }
+        
+        #home-page { padding: 20px; max-width: 600px; margin: 0 auto; }
+        .main-choice-card { background: var(--white); padding: 30px 20px; border-radius: 20px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s; margin-bottom: 20px; border: 2px solid #eee; }
+        .main-choice-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 12px 25px rgba(212, 175, 55, 0.3); }
+        .main-choice-card img { width: 100px; height: 100px; object-fit: contain; margin-bottom: 15px; }
+        .main-choice-card h2 { color: var(--main); margin: 0 0 10px 0; font-size: 26px; }
+        .main-choice-card p { color: #666; font-size: 16px; margin: 0; }
+
+        .category-scroll { display: flex; overflow-x: auto; padding: 15px; gap: 10px; background: white; border-bottom: 1px solid #ddd; white-space: nowrap; scrollbar-width: none; position: sticky; top: 40px; z-index: 1000; }
+        .category-scroll::-webkit-scrollbar { display: none; }
+        .cat-btn { background: #eee; border: none; padding: 10px 20px; border-radius: 25px; font-weight: bold; cursor: pointer; color: #555; transition: 0.3s; font-size: 14px; }
+        .cat-btn.active { background: var(--main); color: var(--accent); box-shadow: 0 4px 10px rgba(128,0,0,0.2); }
+
+        #main-app { display: none; padding-bottom: 80px; }
+        .products { padding: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
+        .card { background: var(--white); padding: 15px 10px; border-radius: 12px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; display: flex; flex-direction: column; justify-content: space-between; }
+        .card img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; }
+        .card h4 { margin: 5px 0; font-size: 15px; color: #222; height: 40px; overflow: hidden; }
+        .card p { color: var(--main); font-weight: bold; font-size: 16px; margin: 5px 0; }
+        .add-btn { background: var(--main); color: white; border: none; width: 100%; padding: 10px; margin-top: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .add-btn:hover { background: var(--accent); color: var(--main); }
+
+        .order-box { background: var(--white); margin: 20px; padding: 20px; border-radius: 15px; border-top: 5px solid var(--accent); box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed #ddd; font-size: 14px; }
+        .qty-btns { display: flex; align-items: center; gap: 8px; }
+        .q-btn { background: #f0f0f0; border: none; width: 30px; height: 30px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; color: var(--main); }
+        .del-btn { color: #ff4757; cursor: pointer; font-weight: bold; font-size: 18px; margin-left: 5px; }
+        
+        .delivery-badge { background: #fffdf0; padding: 15px; border-radius: 10px; margin: 15px 0; border-left: 5px solid var(--accent); font-size: 15px; font-weight: bold; color: #555; }
+        .inp { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: #fafafa; }
+        .btn-loc { background: #34495e; color: white; border: none; width: 100%; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: bold; margin-bottom: 10px; font-size: 16px; }
+        .btn-send { background: var(--accent); color: var(--main); border: none; width: 100%; padding: 16px; border-radius: 10px; font-size: 18px; cursor: pointer; font-weight: bold; text-transform: uppercase; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4); }
+        .back-btn { background: #333; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; margin: 15px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        
+        #floating-cart { position: fixed; bottom: 25px; right: 25px; background: var(--main); color: var(--accent); padding: 15px 25px; border-radius: 50px; font-weight: bold; display: none; z-index: 1000; box-shadow: 0 8px 20px rgba(128, 0, 0, 0.4); border: 2px solid var(--accent); font-size: 18px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="top-slogan"><span>✨ Yakkasaroy — Sifat va Ishonch! ✨</span></div>
+    <header id="main-header">👑 Yakkasaroy Delivery</header>
+
+    <div id="home-page">
+        <div class="main-choice-card" onclick="openShop('market')">
+            <img src="https://cdn-icons-png.flaticon.com/512/3081/3081840.png" alt="Market">
+            <h2>Yakkasaroy Market</h2>
+            <p>Oziq-ovqat, mevalar, shirinliklar va ehtiyojlar</p>
+        </div>
+        <div class="main-choice-card" onclick="openShop('restoran')">
+            <img src="https://cdn-icons-png.flaticon.com/512/3170/3170733.png" alt="Restoran">
+            <h2>Yakkasaroy Restorani</h2>
+            <p>Шашликлар, миллий таомлар, салатлар</p>
+        </div>
+    </div>
+
+    <div id="main-app">
+        <button class="back-btn" onclick="goBack()">⬅️ Orqaga</button>
+        <h2 id="shop-title" style="text-align: center; color: var(--main); margin: 5px 0 15px 0; font-size: 26px;">Yakkasaroy</h2>
+        
+        <div class="category-scroll" id="cat-container"></div>
+        <div class="products" id="prod-list"></div>
+
+        <div class="order-box" id="order-section">
+            <h3 style="color: var(--main); font-size: 22px; margin-top: 0;">🛒 Savatchangiz</h3>
+            <div id="cart-items">Savat bo'sh...</div>
+            <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
+            
+            <div class="delivery-badge">🛵 Yakkasaroy Dostavka: <span id="del-price-display">10,000</span> so'm</div>
+            <h3 id="total-price" style="color: var(--main); font-size: 24px;">Jami: 0 so'm</h3>
+
+            <label style="color: #555;"><b>To'lov turi:</b></label>
+            <select id="pay-method" class="inp">
+                <option value="Naqd">Naqd pul (Kuryerga)</option>
+                <option value="Karta">Karta (Payme/Click)</option>
+            </select>
+
+            <input type="tel" id="user-phone" class="inp" placeholder="📞 Телефон рақамингиз (+998...)">
+            <input type="text" id="user-tg" class="inp" placeholder="✈️ Telegram username (Ихтиёрий)">
+            <button class="btn-loc" onclick="getLocation()">📍 Манзилни Харитадан Аниқлаш</button>
+            <p id="loc-status" style="font-size:13px; color: #777; text-align: center;">Манзил ҳали киритилмади</p>
+            <button class="btn-send" onclick="sendOrder()" id="submitBtn">🚀 БУЮРТМА БЕРИШ</button>
+        </div>
+    </div>
+
+    <div id="floating-cart" onclick="document.getElementById('order-section').scrollIntoView()">🛒 <span id="cart-count">0</span> ta</div>
+
+    <script>
+        const iSalad = "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80"; 
+        const iSoup = "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&q=80"; 
+        const iMeal = "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80"; 
+        const iKebab = "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&q=80"; 
+        const iSide = "https://images.unsplash.com/photo-1576107232684-1279f390859f?w=400&q=80"; 
+        const iDessert = "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400&q=80"; 
+        const iRDrink = "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&q=80"; 
+
+        const iM = "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400&q=80"; 
+        const iS = "https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?w=400&q=80"; 
+        const iG = "https://images.unsplash.com/photo-1603048297172-c92544798d5e?w=400&q=80"; 
+        const iN = "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80"; 
+        const iSu = "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&q=80"; 
+        const iI = "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&q=80"; 
+        const iSh = "https://images.unsplash.com/photo-1582293041079-7814c2f12063?w=400&q=80"; 
+        const iO = "https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?w=400&q=80"; 
+
+        const deliveryPrice = 10000;
+
+        const restoranItems = [
+            {n:"Цезарь (товуқли)", p:35000, c:"Салатлар", i:iSalad},
+            {n:"Греческий салат", p:30000, c:"Салатлар", i:iSalad},
+            {n:"Баҳорий (Весенний)", p:20000, c:"Салатлар", i:iSalad},
+            {n:"Борщ", p:30000, c:"Биринчи таомлар", i:iSoup},
+            {n:"Лағмон", p:35000, c:"Биринчи таомлар", i:iSoup},
+            {n:"Жиз-биз 'Яккасарой'", p:260000, c:"Иккинчи таомлар", i:iMeal},
+            {n:"Тандир кабоб", p:280000, c:"Иккинчи таомлар", i:iMeal},
+            {n:"Қийма шашлик (кичик)", p:14000, c:"Шашликлар", i:iKebab},
+            {n:"Ғиждувон қийма", p:21000, c:"Шашликлар", i:iKebab},
+            {n:"Картошка фри", p:20000, c:"Гарнир ва Соуслар", i:iSide},
+            {n:"Мевали салат", p:30000, c:"Десертлар", i:iDessert},
+            {n:"Мохито (классика)", p:30000, c:"Ичимликлар", i:iRDrink}
+        ];
+
+        const marketItems = [
+            {n:"Olma (Qizil) 1kg",p:18000,c:"Mevalar",i:"https://minio.korzinka.uz/prod/product/1660127219-4a949ab89069d2eb0527cba9.png"}, 
+            {n:"Banan (Ekvador) 1kg",p:25000,c:"Mevalar",i:"https://minio.korzinka.uz/prod/product/1660127214-3d96fa3ef3c7ccfa4bd84557.png"}, 
+            {n:"Kartoshka 1kg",p:6000,c:"Sabzavotlar",i:"https://minio.korzinka.uz/prod/product/1660127202-a1977724a1e9c5222de8fde9.png"}, 
+            {n:"Mol go'shti (Lahm) 1kg",p:95000,c:"Go'sht",i:iG},
+            {n:"Sut 1L (Musaffo)",p:16000,c:"Sut",i:iSu}, 
+            {n:"Tandir non",p:4000,c:"Non",i:iN}, 
+            {n:"Coca-Cola 1.5L",p:14000,c:"Ichimliklar",i:"https://minio.korzinka.uz/prod/product/1660127598-a3205a5a1db48d79cbda95bc.jpg"}, 
+            {n:"Snickers Super",p:12000,c:"Shirinliklar",i:"https://minio.korzinka.uz/prod/product/1691475510-9118c7c93806aeb7f98fb4e5.png"}, 
+            {n:"Guruch (Alanga) 1kg",p:18000,c:"Oziq-ovqat",i:iO}
+        ];
+
+        let cart = {}; let itemPrices = {}; let userLoc = null; let currentCategory = "Barchasi"; let activeItems = []; let activeShopName = "";
+
+        function openShop(type) {
+            document.getElementById('home-page').style.display = "none";
+            document.getElementById('main-app').style.display = "block";
+            const catContainer = document.getElementById('cat-container');
+            
+            if(type === 'market') {
+                activeShopName = "Yakkasaroy Market"; document.getElementById('shop-title').innerText = activeShopName; activeItems = marketItems;
+                catContainer.innerHTML = `
+                    <button class="cat-btn active" onclick="filterCat('Barchasi', this)">Barchasi</button>
+                    <button class="cat-btn" onclick="filterCat('Mevalar', this)">🍎 Mevalar</button>
+                    <button class="cat-btn" onclick="filterCat('Sabzavotlar', this)">🥦 Sabzavotlar</button>
+                    <button class="cat-btn" onclick="filterCat('Non', this)">🥖 Non</button>
+                    <button class="cat-btn" onclick="filterCat('Go\\'sht', this)">🥩 Go'sht</button>
+                    <button class="cat-btn" onclick="filterCat('Sut', this)">🥛 Sut</button>
+                    <button class="cat-btn" onclick="filterCat('Ichimliklar', this)">🥤 Ichimlik</button>
+                    <button class="cat-btn" onclick="filterCat('Shirinliklar', this)">🍫 Shirinlik</button>
+                    <button class="cat-btn" onclick="filterCat('Oziq-ovqat', this)">🥫 Oziq-ovqat</button>
+                `;
+            } else {
+                activeShopName = "Yakkasaroy Restorani"; document.getElementById('shop-title').innerText = activeShopName; activeItems = restoranItems;
+                catContainer.innerHTML = `
+                    <button class="cat-btn active" onclick="filterCat('Barchasi', this)">Barchasi</button>
+                    <button class="cat-btn" onclick="filterCat('Салатлар', this)">🥗 Салатлар</button>
+                    <button class="cat-btn" onclick="filterCat('Биринчи таомлар', this)">🥣 Биринчи таомлар</button>
+                    <button class="cat-btn" onclick="filterCat('Иккинчи таомлар', this)">🍲 Иккинчи таомлар</button>
+                    <button class="cat-btn" onclick="filterCat('Шашликлар', this)">🍢 Шашликлар</button>
+                    <button class="cat-btn" onclick="filterCat('Гарнир ва Соуслар', this)">🍟 Гарнир ва Соус</button>
+                    <button class="cat-btn" onclick="filterCat('Десертлар', this)">🍰 Десертлар</button>
+                    <button class="cat-btn" onclick="filterCat('Ичимликлар', this)">🍹 Ичимликлар</button>
+                `;
+            }
+            currentCategory = "Barchasi"; renderProducts();
+        }
+
+        function goBack() { document.getElementById('home-page').style.display = "block"; document.getElementById('main-app').style.display = "none"; }
+        function filterCat(cat, btnElement) { currentCategory = cat; Array.from(document.getElementsByClassName('cat-btn')).forEach(btn => btn.classList.remove('active')); btnElement.classList.add('active'); renderProducts(); }
+
+        function renderProducts() {
+            const div = document.getElementById('prod-list'); div.innerHTML = "";
+            activeItems.forEach(item => {
+                if(currentCategory === "Barchasi" || item.c === currentCategory) {
+                    div.innerHTML += `
+                    <div class="card">
+                        <div>
+                            <img src="${item.i}" alt="${item.n}">
+                            <h4>${item.n}</h4>
+                            <p>${item.p.toLocaleString()} so'm</p>
+                        </div>
+                        <button class="add-btn" onclick="add('${item.n.replace(/'/g, "\\'")}', ${item.p})">Savatga</button>
+                    </div>`;
+                }
+            });
+        }
+
+        function add(name, price) { cart[name] = (cart[name] || 0) + 1; itemPrices[name] = price; updateCart(); }
+        function changeQty(name, delta) { cart[name] += delta; if (cart[name] <= 0) { delete cart[name]; delete itemPrices[name]; } updateCart(); }
+
+        function updateCart() {
+            const div = document.getElementById('cart-items'); let subtotal = 0; let qty = 0; div.innerHTML = "";
+            for(let n in cart) {
+                let p = itemPrices[n]; let escapedName = n.replace(/'/g, "\\'");
+                div.innerHTML += `
+                <div class="cart-item">
+                    <span style="font-weight: 500;">${n}</span>
+                    <div class="qty-btns">
+                        <button class="q-btn" onclick="changeQty('${escapedName}', -1)">-</button>
+                        <span style="width: 20px; text-align: center; font-weight: bold;">${cart[n]}</span>
+                        <button class="q-btn" onclick="changeQty('${escapedName}', 1)">+</button>
+                        <span class="del-btn" onclick="changeQty('${escapedName}', -${cart[n]})">🗑</span>
+                    </div>
+                </div>`;
+                subtotal += cart[n] * p; qty += cart[n];
+            }
+            if(qty > 0) { document.getElementById('total-price').innerText = "Jами: " + (subtotal + deliveryPrice).toLocaleString() + " сўм"; } 
+            else { div.innerHTML = "<p style='color:#888;'>Сават бўш...</p>"; document.getElementById('total-price').innerText = "Jами: 0 сўм"; }
+            document.getElementById('cart-count').innerText = qty;
+            document.getElementById('floating-cart').style.display = qty > 0 ? "block" : "none";
+        }
+
+        function getLocation() {
+            navigator.geolocation.getCurrentPosition(p => {
+                userLoc = {lat: p.coords.latitude, lng: p.coords.longitude};
+                document.getElementById('loc-status').innerText = "✅ Манзил харитадан олинди!";
+                document.getElementById('loc-status').style.color = "green";
+            }, () => { alert("Илтимос, манзилни аниқлашга рухсат беринг!"); });
+        }
+
+        // ========================================================
+        // 🔒 IDEAL XAVFSIZ JO'NATISH (Render Backend orqali)
+        // ========================================================
+        async function sendOrder() {
+            let phone = document.getElementById('user-phone').value;
+            let tgUser = document.getElementById('user-tg').value || "Kiritilmadi";
+            let pay = document.getElementById('pay-method').value;
+            
+            if(!phone || !userLoc || Object.keys(cart).length == 0) { 
+                alert("Xatolik: Telefon raqam, lokatsiya kiritilmagan yoki savat bo'sh!"); 
+                return; 
+            }
+
+            // Tugmani o'chiramiz (ikki marta bosmaslik uchun)
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "⏳ Jo'natilmoqda...";
+            btn.disabled = true;
+
+            const orderData = {
+                shopName: activeShopName,
+                phone: phone,
+                tgUser: tgUser,
+                payMethod: pay,
+                deliveryPrice: deliveryPrice,
+                cart: cart,
+                itemPrices: itemPrices,
+                total: document.getElementById('total-price').innerText,
+                location: userLoc
+            };
+
+            try {
+                // Sizning Render serveringizga jo'natamiz
+                const response = await fetch("https://yakkasaroy-backend.onrender.com/send_order", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(orderData)
+                });
+
+                if(response.ok) {
+                    alert(`✅ Buyurtma qabul qilindi! ${activeShopName} tez orada siz bilan bog'lanadi.`);
+                    cart = {}; itemPrices = {}; updateCart(); 
+                    document.getElementById('user-phone').value = "";
+                    document.getElementById('user-tg').value = "";
+                    document.getElementById('loc-status').innerText = "Manzil hali kiritilmadi";
+                    document.getElementById('loc-status').style.color = "#777";
+                    userLoc = null;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    alert("❌ Server xatoligi. Keyinroq urinib ko'ring.");
+                }
+            } catch (error) {
+                alert("🌐 Internet yoki server bilan ulanishda xatolik!");
+            } finally {
+                btn.innerText = "🚀 БУЮРТМА БЕРИШ";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
