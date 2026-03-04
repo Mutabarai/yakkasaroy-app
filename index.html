@@ -28,10 +28,7 @@
         .loader-text { margin-top: 25px; font-weight: bold; color: var(--main); font-size: 18px; letter-spacing: 3px; animation: blink 1s infinite; text-transform: uppercase; }
         @keyframes pulseLogo { 0% { transform: scale(0.95); } 50% { transform: scale(1.05); } 100% { transform: scale(0.95); } }
 
-        /* HEADER - Bosib turish uchun oncontextmenu qo'shildi */
         header { background: var(--main); color: #fff; padding: 15px 20px; font-size: 22px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .logo-text { cursor: pointer; user-select: none; -webkit-touch-callout: none; }
-        
         .typewriter-box { text-align: center; padding: 12px; font-size: 15px; font-weight: 600; color: var(--main); background: var(--white); border-bottom: 3px solid var(--accent); position: sticky; top: 0; z-index: 1050; }
         
         .stories-wrapper { display: flex; gap: 15px; padding: 15px 20px; overflow-x: auto; background: var(--bg); border-bottom: 1px solid var(--border); }
@@ -40,10 +37,6 @@
         .story-circle { min-width: 65px; height: 65px; border-radius: 50%; border: 3px solid #e1306c; padding: 2px; }
         .story-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         .story-name { font-size: 11px; margin-top: 5px; color: var(--text); font-weight: bold; width: 70px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        .story-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; flex-direction: column; }
-        .story-modal img { max-width: 90%; max-height: 70%; border-radius: 15px; }
-        .close-story { position: absolute; top: 20px; right: 25px; color: white; font-size: 35px; cursor: pointer; font-weight: bold; }
 
         #home-page { padding: 20px; max-width: 600px; margin: 0 auto; }
         .main-choice-card { background: var(--white); padding: 30px 20px; border-radius: 20px; text-align: center; box-shadow: 0 8px 20px var(--shadow); cursor: pointer; margin-bottom: 20px; border: 2px solid var(--border); }
@@ -79,12 +72,10 @@
         .btn-send { background: var(--accent); color: var(--main); border: none; width: 100%; padding: 16px; border-radius: 10px; font-size: 18px; font-weight: bold; text-transform: uppercase; margin-top: 10px; }
         
         .footer-box { margin: 30px 20px 20px 20px; padding: 30px 20px; background: var(--white); border-radius: 20px; text-align: center; border-top: 4px solid var(--accent); box-shadow: 0 5px 20px var(--shadow); color: var(--text); }
-        .tg-contact-btn { background: #0088cc; color: white; padding: 12px 25px; border-radius: 30px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; font-size: 15px; margin-top: 10px; }
 
-        /* JONLI KUZATUV VA XARITA */
-        #tracking-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2500; flex-direction: column; }
-        .track-header { background: var(--main); color: white; padding: 20px; text-align: center; font-size: 20px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 2510; }
-        .status-container { padding: 20px; background: var(--white); border-bottom: 2px solid var(--border); z-index: 2510; box-shadow: 0 5px 15px rgba(0,0,0,0.05);}
+        #tracking-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 3000; flex-direction: column; }
+        .track-header { background: var(--main); color: white; padding: 20px; text-align: center; font-size: 20px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 3010; user-select: none; cursor: pointer; }
+        .status-container { padding: 20px; background: var(--white); border-bottom: 2px solid var(--border); z-index: 3010; box-shadow: 0 5px 15px rgba(0,0,0,0.05);}
         .status-step { display: flex; align-items: center; margin-bottom: 15px; color: #888; font-weight: bold; transition: 0.3s; }
         .status-step.active { color: var(--main); font-size: 18px; }
         .status-icon { width: 30px; height: 30px; border-radius: 50%; background: #eee; display: flex; justify-content: center; align-items: center; margin-right: 15px; }
@@ -92,14 +83,15 @@
         #map-container { flex: 1; width: 100%; display: none; position: relative; }
         #urgutMap { width: 100%; height: 100%; z-index: 10;}
 
-        /* MAXFIY ADMIN PANEL */
-        #admin-dashboard { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2c3e50; z-index: 99999; color: white; padding: 20px; box-sizing: border-box; overflow-y: auto; }
-        .admin-title { text-align: center; color: #f1c40f; border-bottom: 2px solid #34495e; padding-bottom: 10px; margin-top: 0; }
-        .order-card { background: #34495e; padding: 15px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .order-card p { margin: 5px 0; }
-        .action-btn { background: #27ae60; color: white; border: none; padding: 10px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
-        .action-btn.dispatch { background: #e67e22; }
-        .close-admin { background: #e74c3c; color: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; }
+        /* YETIB KELGANIDAGI SMS BILDIRISHNOMA STILI */
+        .arrival-sms {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: #2ecc71; color: white; padding: 15px 25px; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(46, 204, 113, 0.4); z-index: 99999;
+            font-size: 16px; font-weight: bold; display: flex; align-items: center; gap: 15px;
+            animation: slideDown 0.5s cubic-bezier(0.25, 1, 0.5, 1); width: 85%; max-width: 380px;
+        }
+        @keyframes slideDown { from { top: -100px; opacity: 0; } to { top: 20px; opacity: 1; } }
     </style>
 </head>
 <body>
@@ -110,7 +102,7 @@
     </div>
 
     <div id="tracking-page">
-        <div class="track-header">Sizning Buyurtmangiz 🛍</div>
+        <div class="track-header" onclick="secretAdvance()">Sizning Buyurtmangiz 🛍</div>
         <div class="status-container">
             <div class="status-step active" id="step-1"><div class="status-icon">⏳</div><span>Tasdiqlanishi kutilmoqda...</span></div>
             <div class="status-step" id="step-2"><div class="status-icon">👨‍🍳</div><span>Qabul qilindi! Tayyorlanmoqda...</span></div>
@@ -119,37 +111,19 @@
         <div id="map-container"><div id="urgutMap"></div></div>
     </div>
 
-    <div id="admin-dashboard">
-        <h2 class="admin-title">👑 Yakkasaroy Admin Panel</h2>
-        <div id="admin-orders-list"><p style="text-align: center; color: #95a5a6;">Hozircha yangi buyurtmalar yo'q.</p></div>
-        <button class="close-admin" onclick="closeAdminPanel()">Tizimdan chiqish</button>
-    </div>
-
     <header>
-        <span class="logo-text" oncontextmenu="openAdminPanelPrompt(event)">👑 Yakkasaroy</span>
+        <span>👑 Yakkasaroy</span>
         <button onclick="toggleTheme()" style="background:none;border:none;font-size:24px;cursor:pointer;color:white;">🌙</button>
     </header>
     
-    <div class="typewriter-box">
+    <div class="typewriter-box" id="weather-recommendation">
         <span id="tw-text">Sizning vaqtingiz biz uchun qadrli.</span>
     </div>
 
     <div class="stories-wrapper" id="home-page-stories">
-        <div class="story-item" onclick="openStory('https://images.unsplash.com/photo-1544025162-d76694265947?w=400', 'Jiz-bizga 20% Chegirma!')">
-            <div class="story-circle"><img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=400"></div><div class="story-name">🔥 Aksiya</div>
-        </div>
-        <div class="story-item" onclick="openStory('https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400', 'Yangi issiq shashliklarimiz chiqdi!')">
-            <div class="story-circle"><img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400"></div><div class="story-name">🍢 Yangi</div>
-        </div>
-        <div class="story-item" onclick="openStory('https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400', 'Bozordan uyga tekin yetkazamiz!')">
-            <div class="story-circle"><img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"></div><div class="story-name">🚚 Dostavka</div>
-        </div>
-    </div>
-
-    <div id="story-modal" class="story-modal">
-        <span class="close-story" onclick="closeStory()">×</span>
-        <img id="story-img" src="">
-        <div class="story-text" id="story-text"></div>
+        <div class="story-item"><div class="story-circle"><img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=400"></div><div class="story-name">🔥 Aksiya</div></div>
+        <div class="story-item"><div class="story-circle"><img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400"></div><div class="story-name">🍢 Yangi</div></div>
+        <div class="story-item"><div class="story-circle"><img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"></div><div class="story-name">🚚 Dostavka</div></div>
     </div>
 
     <div id="home-page" class="fade-in">
@@ -170,7 +144,7 @@
         <h2 id="shop-title" style="text-align: center; color: var(--main); margin: 0 0 10px 0;">Yakkasaroy</h2>
         
         <div class="search-bar">
-            <input type="text" id="search-input" class="search-input" placeholder="🔍 Qidirish yoki 🎤 gapiring..." oninput="renderProducts()">
+            <input type="text" id="search-input" class="search-input" placeholder="🔍 Qidirish..." oninput="renderProducts()">
         </div>
 
         <div class="category-scroll" id="cat-container"></div>
@@ -188,10 +162,10 @@
             </select>
             
             <div id="card-details-box" class="card-details-box">
-                <p style="margin: 0 0 5px 0; color: var(--text); font-size: 13px;">Iltimos, to'lovni quyidagi kartaga o'tkazing:</p>
+                <p style="margin: 0 0 5px 0; color: var(--text); font-size: 13px;">To'lovni quyidagi kartaga o'tkazing:</p>
                 <div class="card-number" id="cardNumber">9860 1604 4480 4605</div>
                 <div class="card-name">Ochildiyeva Mo'tabar</div>
-                <label style="font-weight: bold; font-size: 13px; color: var(--text); display: block; margin-top: 10px;">To'lov chekini yuklang (Majburiy emas):</label>
+                <label style="font-weight: bold; font-size: 13px; color: var(--text); display: block; margin-top: 10px;">To'lov chekini yuklang:</label>
                 <input type="file" id="receipt-upload" accept="image/*" class="inp" style="padding: 10px; background: var(--white);">
             </div>
             
@@ -207,7 +181,6 @@
 
     <div class="footer-box" id="footer-section">
         <h3>Biz bilan ishlaganingizdan mamnunmiz! 🤝</h3>
-        <p style="font-size: 14px; color: #888;">Hamkorlik va savollar bo'yicha bizga yozing:</p>
         <a href="https://t.me/ochildiyeva_M_u_t_a_b_a_r" target="_blank" class="tg-contact-btn">✈️ Telegram orqali yozish</a>
     </div>
 
@@ -219,22 +192,18 @@
 
         window.addEventListener('load', () => {
             setTimeout(() => { document.getElementById('splash-screen').style.display = 'none'; }, 1500); 
-            checkOrderStatus(); 
+            document.getElementById('weather-recommendation').innerHTML = "⛅ Samarqandda havo ochiq. Yakkasaroydan oziq-ovqat buyurtma qilish ayni muddao!";
         });
 
         function toggleTheme() { vibratePhone(30); document.body.classList.toggle('dark-mode'); }
-        function openStory(imgSrc, text) { vibratePhone(30); document.getElementById('story-img').src = imgSrc; document.getElementById('story-text').innerText = text; document.getElementById('story-modal').style.display = 'flex'; }
-        function closeStory() { vibratePhone(20); document.getElementById('story-modal').style.display = 'none'; }
 
         const restoranItems = [
             {n:"Цезарь (товуқли)", p:35000, c:"Салатлар", i:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400"},
-            {n:"Борщ", p:30000, c:"Биринчи таомлар", i:"https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400"},
             {n:"Жиз-биз", p:260000, c:"Иккинчи таомлар", i:"https://images.unsplash.com/photo-1544025162-d76694265947?w=400"},
             {n:"Қийма шашлик", p:14000, c:"Шашликлар", i:"https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400"}
         ];
         const marketItems = [
             {n:"Olma (Qizil)",p:18000,c:"Mevalar",i:"https://minio.korzinka.uz/prod/product/1660127219-4a949ab89069d2eb0527cba9.png"}, 
-            {n:"Banan",p:25000,c:"Mevalar",i:"https://minio.korzinka.uz/prod/product/1660127214-3d96fa3ef3c7ccfa4bd84557.png"}, 
             {n:"Mol go'shti",p:95000,c:"Go'sht",i:"https://images.unsplash.com/photo-1603048297172-c92544798d5e?w=400"}
         ];
 
@@ -242,30 +211,18 @@
         let userLoc = null; let map, taxiMarker;
 
         function openShop(type) {
-            vibratePhone(40); document.getElementById('home-page').style.display = "none"; document.getElementById('home-page-stories').style.display = "none"; document.getElementById('main-app').style.display = "block"; document.getElementById('footer-section').style.display = "block";
+            vibratePhone(40); document.getElementById('home-page').style.display = "none"; document.getElementById('home-page-stories').style.display = "none"; document.getElementById('main-app').style.display = "block"; document.getElementById('footer-section').style.display = "block"; document.getElementById('weather-recommendation').style.display = "none";
             const cat = document.getElementById('cat-container');
-            if(type === 'market') { activeShopName = "Yakkasaroy Market"; activeItems = marketItems; cat.innerHTML = `<button class="cat-btn active" onclick="filterCat('Barchasi', this)">Barchasi</button><button class="cat-btn" onclick="filterCat('Mevalar', this)">🍎 Mevalar</button><button class="cat-btn" onclick="filterCat('Go\\'sht', this)">🥩 Go'sht</button>`; } 
-            else { activeShopName = "Yakkasaroy Restorani"; activeItems = restoranItems; cat.innerHTML = `<button class="cat-btn active" onclick="filterCat('Barchasi', this)">Barchasi</button><button class="cat-btn" onclick="filterCat('Салатлар', this)">🥗 Салатлар</button><button class="cat-btn" onclick="filterCat('Шашликлар', this)">🍢 Шашликлар</button>`; }
+            if(type === 'market') { activeShopName = "Yakkasaroy Market"; activeItems = marketItems; cat.innerHTML = `<button class="cat-btn active" onclick="filterCat('Barchasi', this)">Barchasi</button><button class="cat-btn" onclick="filterCat('Mevalar', this)">🍎 Mevalar</button>`; } 
+            else { activeShopName = "Yakkasaroy Restorani"; activeItems = restoranItems; cat.innerHTML = `<button class="cat-btn active" onclick="filterCat('Barchasi', this)">Barchasi</button><button class="cat-btn" onclick="filterCat('Салатлар', this)">🥗 Салатлар</button>`; }
             document.getElementById('shop-title').innerText = activeShopName; currentCategory = "Barchasi"; renderProducts();
         }
 
-        function goBack() { document.getElementById('home-page').style.display = "block"; document.getElementById('home-page-stories').style.display = "flex"; document.getElementById('main-app').style.display = "none"; }
+        function goBack() { document.getElementById('home-page').style.display = "block"; document.getElementById('home-page-stories').style.display = "flex"; document.getElementById('main-app').style.display = "none"; document.getElementById('weather-recommendation').style.display = "block";}
         function filterCat(catName, btn) { currentCategory = catName; document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderProducts(); vibratePhone(20); }
 
         function renderProducts() {
             let q = document.getElementById('search-input').value.toLowerCase(); 
-            
-            // XAKERCHA USUL: Qidiruvga admin777 yozilsa, admin panel ochiladi!
-            if(q === "admin777") {
-                document.getElementById('search-input').value = ""; // Tozalab tashlaymiz
-                if(prompt("Admin parolini kiriting:") === "7777") {
-                    openAdminPanel();
-                } else {
-                    alert("Noto'g'ri parol!");
-                }
-                return;
-            }
-
             const div = document.getElementById('prod-list'); div.innerHTML = "";
             let found = false;
             activeItems.forEach(item => {
@@ -275,16 +232,6 @@
                 }
             });
             if(!found) div.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #888;">Hech narsa topilmadi...</p>`;
-        }
-
-        function startVoiceRecognition() {
-            vibratePhone(40); const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!SpeechRecognition) return alert("Brauzeringiz buni qo'llab-quvvatlamaydi.");
-            const recognition = new SpeechRecognition(); recognition.lang = 'uz-UZ';
-            const btn = document.getElementById('voice-btn');
-            recognition.onstart = () => btn.classList.add('recording');
-            recognition.onresult = (event) => { document.getElementById('search-input').value = event.results[0][0].transcript.toLowerCase(); renderProducts(); };
-            recognition.onend = () => btn.classList.remove('recording'); recognition.start();
         }
 
         function add(name, price) { cart[name] = (cart[name] || 0) + 1; itemPrices[name] = price; updateCart(); vibratePhone(50); }
@@ -320,7 +267,10 @@
 
         async function sendOrder() {
             let p = document.getElementById('user-phone').value; let pay = document.getElementById('pay-method').value; let fileInput = document.getElementById('receipt-upload');
-            if(!p || !userLoc || Object.keys(cart).length == 0) { vibratePhone([100,50,100]); alert("Iltimos, telefoningizni yozing, manzilni belgilang va savatga narsa qo'shing!"); return; }
+            if(!p || Object.keys(cart).length == 0) { vibratePhone([100,50,100]); alert("Telefon va savatni to'ldiring!"); return; }
+            
+            // Xarita olinmagan bo'lsa, Urgut markazi beriladi (Test uchun)
+            if(!userLoc) userLoc = { lat: 39.4063, lng: 67.2422 }; 
             
             const btn = document.getElementById('submitBtn'); btn.innerText = "⏳ Yuklanmoqda..."; btn.disabled = true;
 
@@ -335,19 +285,14 @@
                     let formData = new FormData(); formData.append("chat_id", admin); formData.append("caption", msg); formData.append("parse_mode", "HTML"); formData.append("photo", fileInput.files[0]);
                     await fetch(`https://api.telegram.org/bot${t1}:${t2}/sendPhoto`, { method: "POST", body: formData });
                 } else {
-                    if(pay === "Karta" && fileInput.files.length === 0) msg += `\n⚠️ <i>Diqqat: Karta tanlangan, lekin chek yuklanmadi.</i>`;
                     await fetch(`https://api.telegram.org/bot${t1}:${t2}/sendMessage`, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({chat_id: admin, text: msg, parse_mode: "HTML", disable_web_page_preview: true}) });
                 }
 
                 vibratePhone([100, 50, 100, 50, 200]);
                 confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#d4af37', '#800000', '#ffffff', '#0088cc'] });
 
-                const orderData = { phone: p, items: JSON.stringify(cart), loc: userLoc, status: 'pending' };
-                localStorage.setItem('currentOrder', JSON.stringify(orderData));
-
                 setTimeout(() => { showTrackingPage(); }, 1500);
 
-                cart = {}; updateCart(); document.getElementById('user-phone').value = ""; document.getElementById('user-tg').value = ""; document.getElementById('loc-status').innerText = "Manzil hali kiritilmadi"; document.getElementById('loc-status').style.color = "#888"; userLoc = null; fileInput.value = ""; toggleCardBox();
             } catch(e) { vibratePhone([200, 100, 200]); alert("Xatolik yuz berdi!"); } finally { btn.innerText = "🚀 BUYURTMA BERISH"; btn.disabled = false; }
         }
 
@@ -357,66 +302,21 @@
         }
 
         // -----------------------------------------------------------------
-        // MAXFIY ADMIN PANEL (YANGI USULLAR BILAN)
+        // YASHIRIN FOKUS (Taqdimot uchun eng xavfsiz usul)
         // -----------------------------------------------------------------
-        
-        // 2-usul: Logotipni uzoq bosib turish (Long press)
-        function openAdminPanelPrompt(e) {
-            e.preventDefault(); // Brauzer menyusini to'xtatadi
-            if(prompt("Admin parolini kiriting:") === "7777") {
-                openAdminPanel();
-            } else {
-                alert("Noto'g'ri parol!");
-            }
-        }
+        let demoStep = 1;
 
-        function openAdminPanel() { document.getElementById('admin-dashboard').style.display = 'block'; refreshAdminOrders(); }
-        function closeAdminPanel() { document.getElementById('admin-dashboard').style.display = 'none'; }
-
-        function refreshAdminOrders() {
-            let orderStr = localStorage.getItem('currentOrder'); let list = document.getElementById('admin-orders-list');
-            if(orderStr) {
-                let order = JSON.parse(orderStr); let btnHTML = '';
-                if(order.status === 'pending') btnHTML = `<button class="action-btn" onclick="adminChangeStatus('accepted')">✅ Qabul Qilish (Pishirish)</button>`;
-                else if(order.status === 'accepted') btnHTML = `<button class="action-btn dispatch" onclick="adminChangeStatus('delivering')">🚕 Kuryerga berish (Xarita)</button>`;
-                else if(order.status === 'delivering') btnHTML = `<p style="color:#2ecc71; font-weight:bold;">Kuryer yo'lda!</p><button class="action-btn" style="background:#e74c3c;" onclick="localStorage.removeItem('currentOrder'); refreshAdminOrders();">Yakunlash / O'chirish</button>`;
-
-                list.innerHTML = `<div class="order-card"><h3>Buyurtma (Tel: ${order.phone})</h3><p>Status: <b>${order.status}</b></p><p>Mahsulotlar: ${order.items}</p>${btnHTML}</div>`;
-            } else { list.innerHTML = `<p style="text-align: center; color: #95a5a6;">Hozircha yangi buyurtmalar yo'q.</p>`; }
-        }
-
-        function adminChangeStatus(newStatus) {
-            let orderStr = localStorage.getItem('currentOrder');
-            if(orderStr) { let order = JSON.parse(orderStr); order.status = newStatus; localStorage.setItem('currentOrder', JSON.stringify(order)); refreshAdminOrders(); }
-        }
-
-        // TABLAR O'RTASIDAGI ALOQA
-        window.addEventListener('storage', function(e) { if(e.key === 'currentOrder') checkOrderStatus(); });
-
-        function checkOrderStatus() {
-            let orderStr = localStorage.getItem('currentOrder');
-            if(orderStr) {
-                let order = JSON.parse(orderStr);
-                
-                if(document.getElementById('tracking-page').style.display !== 'flex') {
-                    showTrackingPage();
-                }
-
-                if(order.status === 'accepted') {
-                    document.getElementById('step-1').classList.remove('active'); document.getElementById('step-2').classList.add('active');
-                } else if(order.status === 'delivering') {
-                    document.getElementById('step-2').classList.remove('active'); document.getElementById('step-3').classList.add('active');
-                    startMapAnimation(order.loc.lat, order.loc.lng); 
-                }
-            } else {
-                document.getElementById('tracking-page').style.display = 'none';
-                document.getElementById('home-page').style.display = 'block';
-                document.getElementById('home-page-stories').style.display = 'flex';
-                document.querySelector('header').style.display = 'flex';
-                document.getElementById('footer-section').style.display = 'block';
-                document.getElementById('step-1').classList.add('active'); document.getElementById('step-2').classList.remove('active'); document.getElementById('step-3').classList.remove('active');
-                document.getElementById('map-container').style.display = 'none';
-                if (map) { map.remove(); map = null; }
+        function secretAdvance() {
+            vibratePhone(50);
+            if (demoStep === 1) {
+                document.getElementById('step-1').classList.remove('active'); 
+                document.getElementById('step-2').classList.add('active');
+                demoStep = 2;
+            } else if (demoStep === 2) {
+                document.getElementById('step-2').classList.remove('active'); 
+                document.getElementById('step-3').classList.add('active');
+                startMapAnimation(userLoc.lat, userLoc.lng); 
+                demoStep = 3;
             }
         }
 
@@ -433,16 +333,55 @@
                     L.marker([lat, lng]).addTo(map).bindPopup("Sizning manzilingiz").openPopup();
                     
                     var taxiIcon = L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/3206/3206011.png', iconSize: [40, 40] });
+                    // Mashina sal uzoqroqdan keladi
                     let taxiLat = lat + 0.0150; let taxiLng = lng + 0.0150;
                     taxiMarker = L.marker([taxiLat, taxiLng], {icon: taxiIcon}).addTo(map);
 
-                    setInterval(() => {
-                        taxiLat -= 0.0005; taxiLng -= 0.0005;
-                        taxiMarker.setLatLng([taxiLat, taxiLng]);
-                    }, 1000);
+                    // Mashinani xaritada yurgizish (10 marta qadam tashlaydi)
+                    let moveInterval = setInterval(() => {
+                        taxiLat -= 0.0015; taxiLng -= 0.0015;
+                        
+                        // AGAR MANZILGA YETIB KELSA (To'xtaydi va Xabar beradi)
+                        if (taxiLat <= lat || taxiLng <= lng) {
+                            clearInterval(moveInterval);
+                            taxiMarker.setLatLng([lat, lng]); // Xaridor ustida to'xtaydi
+                            
+                            // Qattiq vibratsiya (Diqqatni tortish uchun)
+                            vibratePhone([200, 100, 200, 100, 500]);
+                            
+                            // Mashina ustida yozuv chiqadi
+                            taxiMarker.bindPopup("<b style='color:#800000;font-size:16px;'>📍 Yetib keldi!</b><br>Iltimos, buyurtmani oling.").openPopup();
+                            
+                            // Ekranning tepasidan tushadigan SMS bildirishnoma
+                            showArrivalAlert();
+                        } else {
+                            taxiMarker.setLatLng([taxiLat, taxiLng]);
+                        }
+                    }, 1000); // Har 1 soniyada yuradi (Jami 10 soniya vaqt oladi)
                 }
                 map.invalidateSize();
             }, 500);
+        }
+
+        // SMS BILDIRISHNOMA YASASH FUNKSIYASI
+        function showArrivalAlert() {
+            const alertBox = document.createElement('div');
+            alertBox.className = 'arrival-sms';
+            alertBox.innerHTML = `
+                <span style="font-size:30px;">🚕</span> 
+                <div>
+                    Dastafkayiz yetib keldi!<br>
+                    <span style="font-size:13px; font-weight:normal; opacity:0.9;">Iltimos, chiqib oling.</span>
+                </div>
+            `;
+            document.body.appendChild(alertBox);
+            
+            // 8 soniyadan keyin avtomat o'chib ketadi
+            setTimeout(() => { 
+                alertBox.style.opacity = '0'; 
+                alertBox.style.transition = '0.5s'; 
+                setTimeout(() => alertBox.remove(), 500); 
+            }, 8000);
         }
     </script>
 </body>
