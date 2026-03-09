@@ -92,6 +92,11 @@
             animation: slideDown 0.5s cubic-bezier(0.25, 1, 0.5, 1); width: 85%; max-width: 380px;
         }
         @keyframes slideDown { from { top: -100px; opacity: 0; } to { top: 20px; opacity: 1; } }
+        
+        /* YANGI: Dostavka ma'lumot qutisi */
+        .delivery-info-box {
+            background: rgba(128, 0, 0, 0.05); padding: 12px; border-radius: 10px; margin-top: 15px; font-size: 14px; text-align: center; border: 1px dashed var(--main); color: var(--text); transition: 0.3s;
+        }
     </style>
 </head>
 <body>
@@ -153,9 +158,16 @@
         <div class="order-box" id="order-section">
             <h3 style="color: var(--main); font-size: 22px; margin-top: 0;">🛒 Savatchangiz</h3>
             <div id="cart-items">Savat bo'sh...</div>
-            <h3 id="total-price" style="color: var(--main); font-size: 24px;">Jami: 0 so'm</h3>
+            <hr style="border: 0; border-top: 1px dashed var(--border); margin: 15px 0;">
             
-            <label style="color: var(--text); font-weight: bold; display: block; margin-top: 10px;">To'lov turi:</label>
+            <h4 id="total-price" style="color: var(--text); font-size: 16px; margin: 5px 0;">Mahsulotlar: 0 so'm</h4>
+            
+            <div id="delivery-info-box" class="delivery-info-box">
+                🚕 Yetkazib berish narxi: <b>Hisoblanmoqda... (Manzilni kiriting)</b>
+            </div>
+            <h3 id="final-total" style="color: var(--main); font-size: 22px; margin-top: 15px; text-align: right;">Umumiy jami: 0 so'm</h3>
+            
+            <label style="color: var(--text); font-weight: bold; display: block; margin-top: 20px;">To'lov turi:</label>
             <select id="pay-method" class="inp" onchange="toggleCardBox()">
                 <option value="Naqd">Naqd pul (Kuryerga)</option>
                 <option value="Karta">Karta (Payme/Click)</option>
@@ -181,7 +193,7 @@
 
     <div class="footer-box" id="footer-section">
         <h3>Biz bilan ishlaganingizdan mamnunmiz! 🤝</h3>
-        <a href="https://t.me/ochildiyeva_M_u_t_a_b_a_r" target="_blank" class="tg-contact-btn">✈️ Telegram orqali yozish</a>
+        <a href="https://t.me/ochildiyeva_M_u_t_a_b_a_r" target="_blank" class="tg-contact-btn" style="color: var(--main); font-weight: bold; text-decoration: none;">✈️ Telegram orqali yozish</a>
     </div>
 
     <div id="floating-cart" onclick="document.getElementById('order-section').scrollIntoView()">🛒 <span id="cart-count">0</span></div>
@@ -189,6 +201,17 @@
 
     <script>
         function vibratePhone(ms) { if (navigator.vibrate) navigator.vibrate(ms); }
+
+        // --- YANGI FUNKSIYA: Masofani hisoblash formula ---
+        function getDistance(lat1, lon1, lat2, lon2) {
+            var R = 6371; // Yer radiusi (km)
+            var dLat = (lat2-lat1) * Math.PI / 180;
+            var dLon = (lon2-lon1) * Math.PI / 180;
+            var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c; 
+        }
 
         window.addEventListener('load', () => {
             setTimeout(() => { document.getElementById('splash-screen').style.display = 'none'; }, 1500); 
@@ -209,6 +232,12 @@
 
         let cart = {}; let itemPrices = {}; let currentCategory = "Barchasi"; let activeItems = []; let activeShopName = ""; 
         let userLoc = null; let map, taxiMarker;
+        
+        // YANGI O'ZGARUVCHILAR
+        let deliveryCost = 0; 
+        let userDistance = 0;
+        const shopLat = 39.4063; // Do'koningiz (yoki restoran) latitude
+        const shopLng = 67.2422; // Do'koningiz longitude
 
         function openShop(type) {
             vibratePhone(40); document.getElementById('home-page').style.display = "none"; document.getElementById('home-page-stories').style.display = "none"; document.getElementById('main-app').style.display = "block"; document.getElementById('footer-section').style.display = "block"; document.getElementById('weather-recommendation').style.display = "none";
@@ -244,8 +273,20 @@
                 div.innerHTML += `<div class="cart-item"><span>${n}</span> <div><button class="q-btn" onclick="changeQty('${escapedName}', -1)">-</button> <b>${cart[n]}</b> <button class="q-btn" onclick="changeQty('${escapedName}', 1)">+</button></div></div>`;
                 subtotal += cart[n] * itemPrices[n]; qty += cart[n];
             }
-            if(qty > 0) { document.getElementById('total-price').innerText = "Jami: " + subtotal.toLocaleString() + " so'm"; document.getElementById('floating-cart').style.display = "block"; } 
-            else { div.innerHTML = "Savat bo'sh..."; document.getElementById('total-price').innerText = "Jami: 0 so'm"; document.getElementById('floating-cart').style.display = "none"; }
+            
+            // Dostavka narxini hisobga olib umumiyni chiqarish
+            let finalTotal = subtotal + deliveryCost;
+
+            if(qty > 0) { 
+                document.getElementById('total-price').innerText = "Mahsulotlar: " + subtotal.toLocaleString() + " so'm"; 
+                document.getElementById('final-total').innerText = "Umumiy jami: " + finalTotal.toLocaleString() + " so'm"; 
+                document.getElementById('floating-cart').style.display = "block"; 
+            } else { 
+                div.innerHTML = "Savat bo'sh..."; 
+                document.getElementById('total-price').innerText = "Mahsulotlar: 0 so'm"; 
+                document.getElementById('final-total').innerText = "Umumiy jami: 0 so'm"; 
+                document.getElementById('floating-cart').style.display = "none"; 
+            }
             document.getElementById('cart-count').innerText = qty;
         }
 
@@ -261,22 +302,48 @@
                     userLoc = { lat: position.coords.latitude, lng: position.coords.longitude };
                     document.getElementById('loc-status').innerText = "✅ Manzil xaritadan olindi!";
                     document.getElementById('loc-status').style.color = "green";
+                    calculateDelivery(); // Lokatsiya olinganda dostavkani hisoblaymiz
                 }, () => { alert("Iltimos, manzilga ruxsat bering!"); });
             } else { alert("Brauzeringiz lokatsiyani qo'llab-quvvatlamaydi."); }
+        }
+
+        // --- YANGI FUNKSIYA: Dostavka narxini hisoblash va ko'rsatish ---
+        function calculateDelivery() {
+            if(!userLoc) return;
+            userDistance = getDistance(shopLat, shopLng, userLoc.lat, userLoc.lng);
+            
+            // TARIF FORMULASI (O'zgartirishingiz mumkin)
+            // Boshlang'ich 5000 so'm, 1 km dan oshsa har km uchun 2000 so'mdan qoshiladi
+            if(userDistance < 1) {
+                deliveryCost = 5000;
+            } else {
+                deliveryCost = 5000 + (Math.round(userDistance) * 2000);
+            }
+            
+            document.getElementById('delivery-info-box').innerHTML = `🚕 Masofa: <b>${userDistance.toFixed(1)} km</b> | Yetkazib berish: <b>${deliveryCost.toLocaleString()} so'm</b>`;
+            updateCart(); // Jami summani yangilash uchun
         }
 
         async function sendOrder() {
             let p = document.getElementById('user-phone').value; let pay = document.getElementById('pay-method').value; let fileInput = document.getElementById('receipt-upload');
             if(!p || Object.keys(cart).length == 0) { vibratePhone([100,50,100]); alert("Telefon va savatni to'ldiring!"); return; }
             
-            // Xarita olinmagan bo'lsa, Urgut markazi beriladi (Test uchun)
-            if(!userLoc) userLoc = { lat: 39.4063, lng: 67.2422 }; 
+            // Xarita olinmagan bo'lsa, avtomatik test uchun manzil beriladi va dostavka hisoblanadi
+            if(!userLoc) { 
+                userLoc = { lat: 39.4063, lng: 67.2422 }; 
+                calculateDelivery(); 
+            } 
             
             const btn = document.getElementById('submitBtn'); btn.innerText = "⏳ Yuklanmoqda..."; btn.disabled = true;
 
+            // XABAR MATNI YANGILANDI
             let msg = `🛍 <b>BUYURTMA: ${activeShopName}</b>\n📞 Tel: ${p}\n💳 To'lov: ${pay}\n\n🛒 Mahsulotlar:\n`;
             for(let n in cart) msg += `▪️ ${n} x ${cart[n]}\n`;
-            msg += `\n💵 ${document.getElementById('total-price').innerText}\n📍 <b>Manzil:</b> <a href="http://googleusercontent.com/maps.google.com/?q=${userLoc.lat},${userLoc.lng}">Xaritada ko'rish</a>`;
+            
+            msg += `\n📏 <b>Masofa:</b> ${userDistance.toFixed(1)} km`;
+            msg += `\n🚕 <b>Dostavka narxi:</b> ${deliveryCost.toLocaleString()} so'm`;
+            msg += `\n💵 <b>UMUMIY SUMMA:</b> ${document.getElementById('final-total').innerText.replace('Umumiy jami: ', '')}`;
+            msg += `\n📍 <b>Manzil:</b> <a href="http://googleusercontent.com/maps.google.com/?q=${userLoc.lat},${userLoc.lng}">Xaritada ko'rish</a>`;
             
             const t1="8799029662", t2="AAGe0rydTjBmppKobgO5sbvigQTWBo0FnTc", admin="6326941673";
 
@@ -301,9 +368,6 @@
             document.getElementById('tracking-page').style.display = 'flex';
         }
 
-        // -----------------------------------------------------------------
-        // YASHIRIN FOKUS (Taqdimot uchun eng xavfsiz usul)
-        // -----------------------------------------------------------------
         let demoStep = 1;
 
         function secretAdvance() {
@@ -333,50 +397,38 @@
                     L.marker([lat, lng]).addTo(map).bindPopup("Sizning manzilingiz").openPopup();
                     
                     var taxiIcon = L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/3206/3206011.png', iconSize: [40, 40] });
-                    // Mashina sal uzoqroqdan keladi
                     let taxiLat = lat + 0.0150; let taxiLng = lng + 0.0150;
                     taxiMarker = L.marker([taxiLat, taxiLng], {icon: taxiIcon}).addTo(map);
 
-                    // Mashinani xaritada yurgizish (10 marta qadam tashlaydi)
                     let moveInterval = setInterval(() => {
                         taxiLat -= 0.0015; taxiLng -= 0.0015;
                         
-                        // AGAR MANZILGA YETIB KELSA (To'xtaydi va Xabar beradi)
                         if (taxiLat <= lat || taxiLng <= lng) {
                             clearInterval(moveInterval);
-                            taxiMarker.setLatLng([lat, lng]); // Xaridor ustida to'xtaydi
-                            
-                            // Qattiq vibratsiya (Diqqatni tortish uchun)
+                            taxiMarker.setLatLng([lat, lng]); 
                             vibratePhone([200, 100, 200, 100, 500]);
-                            
-                            // Mashina ustida yozuv chiqadi
                             taxiMarker.bindPopup("<b style='color:#800000;font-size:16px;'>📍 Yetib keldi!</b><br>Iltimos, buyurtmani oling.").openPopup();
-                            
-                            // Ekranning tepasidan tushadigan SMS bildirishnoma
                             showArrivalAlert();
                         } else {
                             taxiMarker.setLatLng([taxiLat, taxiLng]);
                         }
-                    }, 1000); // Har 1 soniyada yuradi (Jami 10 soniya vaqt oladi)
+                    }, 1000); 
                 }
                 map.invalidateSize();
             }, 500);
         }
 
-        // SMS BILDIRISHNOMA YASASH FUNKSIYASI
         function showArrivalAlert() {
             const alertBox = document.createElement('div');
             alertBox.className = 'arrival-sms';
             alertBox.innerHTML = `
                 <span style="font-size:30px;">🚕</span> 
                 <div>
-                    Dastafkayiz yetib keldi!<br>
+                    Dastavka yetib keldi!<br>
                     <span style="font-size:13px; font-weight:normal; opacity:0.9;">Iltimos, chiqib oling.</span>
                 </div>
             `;
             document.body.appendChild(alertBox);
-            
-            // 8 soniyadan keyin avtomat o'chib ketadi
             setTimeout(() => { 
                 alertBox.style.opacity = '0'; 
                 alertBox.style.transition = '0.5s'; 
