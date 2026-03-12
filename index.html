@@ -24,29 +24,34 @@
         .sb-profile-pic { width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; color: var(--main); }
         .sb-title { padding: 15px 20px 5px; font-size: 13px; text-transform: uppercase; color: #888; font-weight: bold; letter-spacing: 1px; }
         .sb-item { padding: 15px 20px; border-bottom: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 16px; color: var(--text); transition: 0.2s;}
+        .sb-item:hover { background: rgba(0,0,0,0.02); }
         .sb-item:active { background: var(--bg); }
+        .sb-item.active-region { background: rgba(212, 175, 55, 0.2); border-left: 4px solid var(--accent); font-weight: bold; color: var(--main); }
         .sb-item i { font-size: 20px; width: 25px; text-align: center; }
 
         /* --- XABARNOMA --- */
-        #sms-alert { position: fixed; top: -150px; left: 5%; width: 90%; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-left: 6px solid #00c853; box-shadow: 0 15px 35px rgba(0,0,0,0.2); padding: 20px; border-radius: 15px; z-index: 30000; transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 15px; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.4); }
+        #sms-alert { position: fixed; top: -150px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-left: 6px solid #00c853; box-shadow: 0 15px 35px rgba(0,0,0,0.2); padding: 20px; border-radius: 15px; z-index: 30000; transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 15px; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.4); }
         body.dark-mode #sms-alert { background: rgba(30, 30, 30, 0.85); color: white; border: 1px solid rgba(255,255,255,0.1); }
         #sms-alert.show { top: 20px; }
 
         /* --- HEADER & SHIOR --- */
         header { background: var(--main); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 2000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .slogan { text-align: center; padding: 12px; font-size: 13px; font-weight: 800; color: #800000; background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); background-size: 200% 200%; animation: gradientShift 4s ease infinite; border-bottom: 3px solid var(--accent); text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .slogan { text-align: center; padding: 10px; font-size: 13px; font-weight: 800; color: #800000; background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); background-size: 200% 200%; animation: gradientShift 4s ease infinite; text-transform: uppercase; letter-spacing: 1px;}
+        .region-banner { text-align: center; background: #27ae60; color: white; padding: 5px; font-size: 12px; font-weight: bold; letter-spacing: 1px; border-bottom: 3px solid var(--accent); box-shadow: 0 4px 15px rgba(0,0,0,0.1);}
         @keyframes gradientShift { 0% {background-position: 0% 50%} 50% {background-position: 100% 50%} 100% {background-position: 0% 50%} }
 
         /* --- ASOSIY QISMLAR --- */
         .container { padding: 15px; max-width: 600px; margin: 0 auto; min-height: 70vh; display: flex; flex-direction: column; }
         
         .main-card { background: var(--white); border-radius: 15px; padding: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 20px; cursor: pointer; border: 1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.2s;}
+        .main-card:hover { box-shadow: 0 6px 15px rgba(0,0,0,0.1); transform: translateY(-2px); }
         .main-card:active { transform: scale(0.97); }
         .main-card img { width: 60px; }
 
-        /* --- DO'KONLAR RO'YXATI (YANGI) --- */
+        /* --- DO'KONLAR RO'YXATI --- */
         .store-card { background: var(--white); padding: 15px; border-radius: 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid var(--border); cursor: pointer; transition: 0.2s;}
-        .store-card:active { transform: scale(0.97); border-color: var(--main);}
+        .store-card:hover { border-color: var(--main); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+        .store-card:active { transform: scale(0.97); }
         .store-icon { font-size: 35px; background: var(--bg); padding: 12px; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center;}
         .store-info { flex: 1; }
         .store-info h3 { margin: 0; font-size: 17px; color: var(--main); }
@@ -58,11 +63,13 @@
         .ai-search-input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 10px; font-size: 15px; outline: none; box-sizing: border-box; background: white; }
         .ai-badge { position: absolute; top: -12px; left: 15px; background: #3498db; color: white; font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: bold; }
 
-        .products-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
-        .card { background: var(--white); border-radius: 12px; padding: 12px; text-align: center; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between;}
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-top: 15px; }
+        .card { background: var(--white); border-radius: 12px; padding: 12px; text-align: center; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s;}
+        .card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .card img { width: 100%; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
         .card h4 { margin: 5px 0; font-size: 14px; }
-        .add-btn { background: var(--main); color: white; border: none; width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px;}
+        .add-btn { background: var(--main); color: white; border: none; width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.2s;}
+        .add-btn:hover { background: #600000; }
 
         .order-box { background: var(--white); padding: 20px; border-radius: 18px; margin-top: 20px; border-top: 5px solid var(--accent); box-shadow: 0 5px 20px rgba(0,0,0,0.08); }
         #cart-content { max-height: 220px; overflow-y: auto; padding-right: 5px; }
@@ -70,14 +77,30 @@
         #cart-content::-webkit-scrollbar-thumb { background: var(--main); border-radius: 10px; }
         .cart-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #ddd; font-size: 14px; align-items: center;}
         
+        .delivery-options { display: flex; gap: 10px; margin: 15px 0; }
+        .del-option { flex: 1; border: 2px solid var(--border); border-radius: 12px; padding: 12px 10px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; background: var(--white); }
+        .del-option.active { border-color: var(--main); background: rgba(128, 0, 0, 0.05); }
+        .del-icon { font-size: 26px; }
+        .del-text { line-height: 1.3; }
+        .del-text b { font-size: 14px; color: var(--main); }
+        
+        #eco-info { display: none; font-size: 13px; background: #e8f5e9; padding: 12px; border-radius: 10px; color: #2e7d32; margin-bottom: 15px; border: 1px dashed #a5d6a7; line-height: 1.5;}
+
+        /* --- TO'LOV VA CHEK (YANGI) --- */
+        .pay-select { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font-size: 16px; font-weight: bold; outline: none;}
+        #card-details-box { display: none; background: rgba(212, 175, 55, 0.1); border: 2px dashed var(--accent); padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 15px; }
+        .copy-btn { background: var(--main); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; margin-left: 10px; transition: 0.2s;}
+        .copy-btn:active { transform: scale(0.9); background: var(--accent); }
+
         .inp { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid var(--border); border-radius: 10px; box-sizing: border-box; font-size: 16px; background: var(--bg); color: var(--text); outline: none;}
         .btn-send { background: var(--accent); color: var(--main); border: none; width: 100%; padding: 18px; border-radius: 12px; font-weight: bold; font-size: 18px; cursor: pointer; margin-top: 15px; transition: 0.2s;}
         .btn-send:active { transform: scale(0.95); }
+        .btn-loc { background: white; border: 2px solid var(--main); color: var(--main); font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; padding: 14px; border-radius: 10px; font-size: 16px; margin-top: 5px;}
+        .btn-loc:hover { background: var(--bg); }
 
         #dist-info { margin-top: 15px; padding: 15px; background: #e0f7fa; border-radius: 10px; font-size: 15px; color: #006064; display: none; text-align: left; border: 1px solid #b2ebf2; line-height: 1.6; }
 
-        /* --- HAMKORLIK FOOTER QISMI --- */
-        .partner-footer { background: var(--white); margin-top: auto; padding: 30px 20px; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.08); border: 1px solid var(--border); border-top: 5px solid #3498db; margin-bottom: 20px;}
+        .partner-footer { background: var(--white); margin-top: 30px; padding: 30px 20px; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.08); border: 1px solid var(--border); border-top: 5px solid #3498db; margin-bottom: 20px;}
         .partner-footer h3 { margin: 0 0 10px 0; color: var(--main); font-size: 20px; }
         .partner-footer p { font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.5; }
         .tg-btn { display: inline-block; background: #0088cc; color: white; padding: 14px 30px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 16px; transition: 0.2s; box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4); }
@@ -95,8 +118,8 @@
         <div class="sb-header">
             <div class="sb-profile-pic">👤</div>
             <div>
-                <div style="font-weight:bold; font-size:18px;">Humoyun</div>
-                <div style="font-size:13px; color: #ffeb3b;">SuperApp Faoli</div>
+                <div style="font-weight:bold; font-size:18px;">Mo'tabar</div>
+                <div style="font-size:13px; color: #ffeb3b;">Platforma Asoschisi</div>
             </div>
         </div>
         
@@ -104,6 +127,11 @@
         <div class="sb-item" onclick="alert('Admin Panel faqat yopiq kod orqali ochiladi.'); toggleSidebar();"><i>⚙️</i> Admin Paneli</div>
         <div class="sb-item" onclick="toggleTheme(); toggleSidebar();"><i>🌙</i> Tun/Kun rejimi</div>
         
+        <div class="sb-title">📍 Hududni tanlash</div>
+        <div class="sb-item active-region" id="reg-urgut" onclick="setRegion('urgut', 'Urgut tumani')"><i>🏘️</i> Tumanimdagi do'konlar (Urgut)</div>
+        <div class="sb-item" id="reg-samarqand" onclick="setRegion('samarqand', 'Samarqand viloyati')"><i>🏙️</i> Viloyatdagi do'konlar (Samarqand)</div>
+        <div class="sb-item" id="reg-respublika" onclick="setRegion('respublika', 'Respublika (O\'zbekiston)')"><i>🇺🇿</i> Respublikadagi do'konlar</div>
+
         <div class="sb-title">Kategoriyalar</div>
         <div class="sb-item" onclick="openCategory('market', 'Oziq-ovqat Do\'konlari'); toggleSidebar();"><i>🛒</i> Oziq-ovqat</div>
         <div class="sb-item" onclick="openCategory('restoran', 'Restoranlar'); toggleSidebar();"><i>🍽️</i> Restoranlar</div>
@@ -126,6 +154,7 @@
         <div style="width: 26px;"></div>
     </header>
     <div class="slogan">⚡ Sizning vaqtingizni tejash – bizning oliy maqsadimiz! ⚡</div>
+    <div class="region-banner" id="top-region-banner">📍 Tanlangan hudud: URGUT TUMANI</div>
 
     <div class="container" id="main-content">
         
@@ -179,12 +208,44 @@
                 <h3 style="margin-top: 0; border-bottom: 2px solid var(--border); padding-bottom: 10px;">🛒 Aqlli Savatcha</h3>
                 <div id="cart-content">Savat bo'sh...</div>
                 
+                <div class="delivery-options">
+                    <label class="del-option active" id="opt-tezkor" onclick="setDeliveryType('tezkor')">
+                        <div class="del-icon">🚀</div>
+                        <div class="del-text"><b>Tezkor</b><br><span style="font-size:11px; color:#666;">1 km = 3000 so'm</span></div>
+                    </label>
+                    <label class="del-option" id="opt-arzon" onclick="setDeliveryType('arzon')">
+                        <div class="del-icon">♻️</div>
+                        <div class="del-text"><b>Arzon (Eco)</b><br><span style="font-size:11px; color:#666;">1 km = 1500 so'm</span></div>
+                    </label>
+                </div>
+                
+                <div id="eco-info">
+                    <b>ℹ️ Nega arzon?</b> Sizning buyurtmangiz shu atrofdagi boshqa buyurtmalar bilan bitta kuryerga biriktiriladi. Yetkazish vaqti sal ko'proq, lekin narxi <b>50% arzon!</b>
+                </div>
+
                 <div id="dist-info"></div>
                 
                 <h2 id="total-price" style="text-align: right; color: var(--main); margin: 20px 0;">Jami: 0 so'm</h2>
                 
+                <label style="font-weight: bold; color: var(--text); display: block; margin-top: 15px;">💳 To'lov turi:</label>
+                <select id="pay-method" class="pay-select" onchange="toggleCardBox()">
+                    <option value="Naqd">💵 Naqd pul (Kuryerga)</option>
+                    <option value="Karta">💳 Karta (Payme/Click)</option>
+                </select>
+
+                <div id="card-details-box">
+                    <p style="margin: 0 0 5px 0; color: var(--text); font-size: 13px;">To'lovni quyidagi kartaga o'tkazing:</p>
+                    <div style="font-size: 20px; color: var(--main); font-weight: bold; letter-spacing: 1px; margin: 10px 0; display:flex; justify-content:center; align-items:center;">
+                        <span id="cardNumberTxt">980160444804606</span>
+                        <button class="copy-btn" onclick="copyCard()">Nusxalash</button>
+                    </div>
+                    <div style="font-weight:bold; color: var(--text);">Ochildiyeva Mo'tabar</div>
+                    <label style="font-weight: bold; font-size: 13px; color: #d35400; display: block; margin-top: 15px;">⚠️ To'lov chekini yuklang (Majburiy):</label>
+                    <input type="file" id="receipt-upload" accept="image/*" class="inp" style="padding: 10px; background: white; border: 2px dashed #d35400;">
+                </div>
+                
                 <input type="tel" id="user-phone" class="inp" placeholder="📞 Telefon raqamingiz">
-                <button onclick="getLocation()" class="inp" style="background:white; border:2px solid var(--main); color:var(--main); font-weight:bold; cursor:pointer; transition: 0.3s;">📍 Manzilni xaritadan aniqlash</button>
+                <button id="locBtn" onclick="getLocation()" class="btn-loc">📍 Manzilni xaritadan aniqlash</button>
                 <button class="btn-send" onclick="sendOrder()" id="submitBtn">🚀 BUYURTMANI TASDIQLASH</button>
             </div>
         </div>
@@ -202,7 +263,46 @@
         const shopLat = 39.4063, shopLng = 67.2422; 
         let cart = {}; let activeShopType = ""; let activeShopName = ""; let userLoc = null; 
         let distKm = 0; let deliveryCost = 0; let estimatedTime = 0;
+        let deliveryType = 'tezkor';
         let map, carMarker;
+        let currentRegion = 'urgut';
+
+        // TO'LOV VA KARTA LOGIKASI
+        function toggleCardBox() {
+            const method = document.getElementById('pay-method').value;
+            const box = document.getElementById('card-details-box');
+            if(method === "Karta") {
+                box.style.display = "block";
+                if(navigator.vibrate) navigator.vibrate(40);
+            } else {
+                box.style.display = "none";
+            }
+        }
+
+        function copyCard() {
+            navigator.clipboard.writeText("980160444804606").then(() => {
+                alert("✅ Karta raqami muvaffaqiyatli nusxalandi!");
+            });
+        }
+
+        // HUDUD LOGIKASI
+        function setRegion(regionKey, regionName) {
+            currentRegion = regionKey;
+            document.getElementById('top-region-banner').innerText = `📍 Tanlangan hudud: ${regionName.toUpperCase()}`;
+            document.querySelectorAll('.sb-item').forEach(el => el.classList.remove('active-region'));
+            document.getElementById('reg-' + regionKey).classList.add('active-region');
+            cart = {}; updateCartUI(); goBackToHome(); toggleSidebar();
+        }
+
+        // DASTAFKA TURI
+        function setDeliveryType(type) {
+            deliveryType = type;
+            document.getElementById('opt-tezkor').classList.remove('active');
+            document.getElementById('opt-arzon').classList.remove('active');
+            document.getElementById('opt-' + type).classList.add('active');
+            document.getElementById('eco-info').style.display = type === 'arzon' ? 'block' : 'none';
+            if(userLoc) calculateDistAndCost();
+        }
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -214,170 +314,83 @@
 
         function toggleTheme() { document.body.classList.toggle('dark-mode'); }
 
-        // BAZA: DO'KONLAR
+        // BAZALAR
         const shopsData = {
-            'market': [
-                {n: "Korzinka", desc: "Katta assortiment, tez yetkazish", icon: "🛒", rating: "⭐️ 4.9"},
-                {n: "Havas", desc: "Arzon narxlar, uyingiz yonida", icon: "🏪", rating: "⭐️ 4.7"},
-                {n: "Makro", desc: "Sifatli oziq-ovqat va mevalar", icon: "🍎", rating: "⭐️ 4.8"}
-            ],
-            'restoran': [
-                {n: "Rayhon Milliy Taomlar", desc: "Osh, Norin, Qozonkabob", icon: "🥘", rating: "⭐️ 4.9"},
-                {n: "Urgut Osh Markazi", desc: "Haqiqiy Samarqand oshi", icon: "🍚", rating: "⭐️ 4.8"},
-                {n: "KFC Fast Food", desc: "Qarsildoq tovuqlar va burger", icon: "🍗", rating: "⭐️ 4.7"}
-            ],
-            'texnika': [
-                {n: "Texnomart", desc: "Muddatli to'lov va sifat", icon: "📺", rating: "⭐️ 4.8"},
-                {n: "MediaPark", desc: "Katta maishiy texnikalar", icon: "📱", rating: "⭐️ 4.7"},
-                {n: "Ishonch", desc: "Uyingiz uchun barcha narsa", icon: "💻", rating: "⭐️ 4.9"}
-            ],
-            'qurilish': [
-                {n: "Master Stroy", desc: "Sement, g'isht, shlakoblok", icon: "🧱", rating: "⭐️ 4.8"},
-                {n: "Urgut Sement", desc: "To'g'ridan-to'g'ri zavoddan", icon: "🏭", rating: "⭐️ 4.9"},
-                {n: "Stroy Market", desc: "Bo'yoqlar va asbob-uskuna", icon: "🔨", rating: "⭐️ 4.6"}
-            ],
-            'parfyum': [
-                {n: "Bellstore", desc: "Original kosmetika", icon: "💄", rating: "⭐️ 4.9"},
-                {n: "Parfum Gallery", desc: "Fransuz atirlari", icon: "✨", rating: "⭐️ 4.8"},
-                {n: "Beauty Shop", desc: "Ayollar uchun maxsus", icon: "🌸", rating: "⭐️ 4.7"}
-            ]
+            'urgut': {
+                'market': [{n: "Urgut Makro", desc: "Katta supermarket", icon: "🛒", rating: "⭐️ 4.9"}, {n: "Havas Urgut", desc: "Arzon narxlar", icon: "🏪", rating: "⭐️ 4.7"}],
+                'restoran': [{n: "Urgut Osh Markazi", desc: "Haqiqiy oshi", icon: "🍚", rating: "⭐️ 4.9"}, {n: "Chinor Choyxonasi", desc: "Shashlik", icon: "🥘", rating: "⭐️ 4.8"}],
+                'texnika': [{n: "Urgut Texnomart", desc: "Muddatli to'lov", icon: "📺", rating: "⭐️ 4.8"}],
+                'qurilish': [{n: "Urgut Sement", desc: "Zavoddan", icon: "🏭", rating: "⭐️ 4.9"}, {n: "Master Stroy", desc: "G'isht, shlakoblok", icon: "🧱", rating: "⭐️ 4.8"}],
+                'parfyum': [{n: "Urgut Bellstore", desc: "Kosmetika", icon: "💄", rating: "⭐️ 4.9"}]
+            },
+            'samarqand': {
+                'market': [{n: "Korzinka Samarqand", desc: "Zo'r sifat", icon: "🛒", rating: "⭐️ 4.9"}, {n: "Siyob Bozori", desc: "Mevalar", icon: "🍎", rating: "⭐️ 4.9"}],
+                'restoran': [{n: "Samarqand Osh Markazi", desc: "Mashhur osh", icon: "🍚", rating: "⭐️ 4.9"}, {n: "KFC Samarqand", desc: "Tovuqlar", icon: "🍗", rating: "⭐️ 4.7"}],
+                'texnika': [{n: "MediaPark Sam", desc: "Katta texnikalar", icon: "📱", rating: "⭐️ 4.7"}],
+                'qurilish': [{n: "Samarqand Stroy", desc: "Barcha mollari", icon: "🧱", rating: "⭐️ 4.8"}],
+                'parfyum': [{n: "Parfum Gallery Sam", desc: "Atirlar", icon: "✨", rating: "⭐️ 4.8"}]
+            },
+            'respublika': {
+                'market': [{n: "Korzinka (Toshkent)", desc: "Tarmoq", icon: "🛒", rating: "⭐️ 4.9"}],
+                'restoran': [{n: "Besh Qozon", desc: "Toshkent oshi", icon: "🍚", rating: "⭐️ 4.8"}],
+                'texnika': [{n: "Texnomart Uz", desc: "Respublika", icon: "📺", rating: "⭐️ 4.8"}],
+                'qurilish': [{n: "Qizilqum Sement", desc: "Zavod", icon: "🏭", rating: "⭐️ 4.9"}],
+                'parfyum': [{n: "Bellstore Uz", desc: "Tarmoq", icon: "💄", rating: "⭐️ 4.9"}]
+            }
         };
 
-        // BAZA: MAHSULOTLAR
-        const restoranItems = [
-            {n:"Palov (Osh)", p:30000, tags:"issiq", i:"https://images.unsplash.com/photo-1544025162-d76694265947?w=200"}, 
-            {n:"Jiz-biz", p:65000, tags:"issiq go'sht", i:"https://images.unsplash.com/photo-1544025162-d76694265947?w=200"}, 
-            {n:"Borsh sho'rva", p:25000, tags:"issiq suyuq", i:"https://images.unsplash.com/photo-1547592166-23ac45744acd?w=200"},
-            {n:"Shashlik (Qiyma)", p:15000, tags:"go'sht", i:"https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=200"}
-        ];
-        const marketItems = [
-            {n:"Olma (kg)", p:15000, tags:"meva", i:"https://images.unsplash.com/photo-1560806887-1e4cd0b6bcd6?w=200"}, 
-            {n:"Go'sht (kg)", p:95000, tags:"ro'zg'or", i:"https://images.unsplash.com/photo-1603048297172-c92544798d5e?w=200"}, 
-            {n:"Sut 1L", p:10000, tags:"bolalarga", i:"https://images.unsplash.com/photo-1563636619-e9107da5a1bb?w=200"},
-            {n:"Coca-Cola", p:14000, tags:"ichimlik", i:"https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200"}
-        ];
-        const texnikaItems = [
-            {n:"Televizor 32'", p:1500000, tags:"texnika tv ekran", i:"https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=200"},
-            {n:"Dazmol Philips", p:350000, tags:"texnika dazmol", i:"https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?w=200"},
-            {n:"Elektr Choynak", p:120000, tags:"texnika oshxona", i:"https://images.unsplash.com/photo-1585830811417-64903328eb9f?w=200"}
-        ];
-        const qurilishItems = [
-            {n:"Sement (50kg)", p:45000, tags:"qurilish sement usta", i:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=200"},
-            {n:"Shlakoblok", p:4500, tags:"qurilish gisht tosh", i:"https://images.unsplash.com/photo-1584288417032-9cb42e47e154?w=200"},
-            {n:"Bo'yoq (3L)", p:35000, tags:"qurilish kraska rang", i:"https://images.unsplash.com/photo-1562259929-b7e181d8d002?w=200"}
-        ];
-        const parfyumItems = [
-            {n:"Dior Sauvage", p:450000, tags:"atir parfyum erkak", i:"https://images.unsplash.com/photo-1594035910387-fea47794261f?w=200"},
-            {n:"Chanel No.5", p:550000, tags:"atir parfyum ayol", i:"https://images.unsplash.com/photo-1541643600914-78b084683601?w=200"},
-            {n:"Suyuq Sovun", p:18000, tags:"sovun tozalik", i:"https://images.unsplash.com/photo-1584305574647-0cc949a2fc9f?w=200"}
-        ];
+        const restoranItems = [{n:"Palov (Osh)", p:30000, tags:"issiq", i:"https://images.unsplash.com/photo-1544025162-d76694265947?w=200"}, {n:"Jiz-biz", p:65000, tags:"issiq go'sht", i:"https://images.unsplash.com/photo-1544025162-d76694265947?w=200"}, {n:"Shashlik", p:15000, tags:"go'sht", i:"https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=200"}];
+        const marketItems = [{n:"Olma (kg)", p:15000, tags:"meva", i:"https://images.unsplash.com/photo-1560806887-1e4cd0b6bcd6?w=200"}, {n:"Go'sht (kg)", p:95000, tags:"ro'zg'or", i:"https://images.unsplash.com/photo-1603048297172-c92544798d5e?w=200"}, {n:"Coca-Cola", p:14000, tags:"ichimlik", i:"https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200"}];
+        const texnikaItems = [{n:"Televizor 32'", p:1500000, tags:"texnika tv ekran", i:"https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=200"}, {n:"Dazmol Philips", p:350000, tags:"texnika dazmol", i:"https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?w=200"}];
+        const qurilishItems = [{n:"Sement (50kg)", p:45000, tags:"qurilish sement usta", i:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=200"}, {n:"Bo'yoq (3L)", p:35000, tags:"qurilish kraska rang", i:"https://images.unsplash.com/photo-1562259929-b7e181d8d002?w=200"}];
+        const parfyumItems = [{n:"Dior Sauvage", p:450000, tags:"atir parfyum erkak", i:"https://images.unsplash.com/photo-1594035910387-fea47794261f?w=200"}];
 
-        // 1-QADAM: Kategoriya tanlanganda do'konlar ro'yxatini ochish
         function openCategory(type, title) {
             document.getElementById('home-page').style.display = 'none';
             document.getElementById('shop-list-page').style.display = 'block';
             document.getElementById('category-title').innerText = title;
-            
             const container = document.getElementById('shops-container');
-            const shops = shopsData[type];
-            
-            container.innerHTML = shops.map(s => `
-                <div class="store-card" onclick="openShop('${type}', '${s.n}')">
-                    <div class="store-icon">${s.icon}</div>
-                    <div class="store-info">
-                        <h3>${s.n}</h3>
-                        <p>${s.desc}</p>
-                        <div class="store-rating">${s.rating}</div>
-                    </div>
-                </div>
-            `).join('');
-            
-            if(navigator.vibrate) navigator.vibrate(20);
+            const shops = shopsData[currentRegion][type] || [];
+            container.innerHTML = shops.map(s => `<div class="store-card" onclick="openShop('${type}', '${s.n}')"><div class="store-icon">${s.icon}</div><div class="store-info"><h3>${s.n}</h3><p>${s.desc}</p><div class="store-rating">${s.rating}</div></div></div>`).join('');
         }
 
-        // 2-QADAM: Do'kon tanlanganda mahsulotlarni ochish
         function openShop(type, shopName) {
-            activeShopType = type;
-            activeShopName = shopName; // Qaysi do'konga kirgani xotirada qoladi
-            
-            // Savatni yangi do'kon uchun tozalash (Haqiqiy mantiq)
-            cart = {}; updateCartUI();
-            
+            activeShopType = type; activeShopName = shopName; cart = {}; updateCartUI();
             document.getElementById('shop-list-page').style.display = 'none';
             document.getElementById('shop-page').style.display = 'block';
             document.getElementById('shop-title').innerText = shopName;
             document.getElementById('ai-input').value = "";
+            const locBtn = document.getElementById('locBtn'); locBtn.innerText = "📍 Manzilni xaritadan aniqlash"; locBtn.style.background = "white"; locBtn.style.color = "var(--main)";
+            document.getElementById('dist-info').style.display = 'none'; userLoc = null;
             renderItems();
         }
 
-        // ORQAGA QAYTISH FUNKSIYALARI
-        function goBackToHome() {
-            document.getElementById('shop-list-page').style.display = 'none';
-            document.getElementById('home-page').style.display = 'block';
-        }
-        function goBackToShopList() {
-            document.getElementById('shop-page').style.display = 'none';
-            document.getElementById('shop-list-page').style.display = 'block';
-        }
+        function goBackToHome() { document.getElementById('shop-list-page').style.display = 'none'; document.getElementById('home-page').style.display = 'block'; }
+        function goBackToShopList() { document.getElementById('shop-page').style.display = 'none'; document.getElementById('shop-list-page').style.display = 'block'; }
 
         function getActiveItems() {
             if(activeShopType === 'market') return marketItems;
             if(activeShopType === 'restoran') return restoranItems;
             if(activeShopType === 'texnika') return texnikaItems;
             if(activeShopType === 'qurilish') return qurilishItems;
-            if(activeShopType === 'parfyum') return parfyumItems;
-            return [];
+            if(activeShopType === 'parfyum') return parfyumItems; return [];
         }
 
-        function simulateAI() {
-            let text = document.getElementById('ai-input').value.toLowerCase();
-            let itemsToSearch = getActiveItems();
-            let filtered = text.length < 2 ? itemsToSearch : itemsToSearch.filter(i => i.tags.includes(text) || i.n.toLowerCase().includes(text));
-            renderList(filtered);
-        }
-
+        function simulateAI() { let text = document.getElementById('ai-input').value.toLowerCase(); let itemsToSearch = getActiveItems(); let filtered = text.length < 2 ? itemsToSearch : itemsToSearch.filter(i => i.tags.includes(text) || i.n.toLowerCase().includes(text)); renderList(filtered); }
         function renderItems() { renderList(getActiveItems()); }
-
         function renderList(itemsArray) {
             const list = document.getElementById('prod-list');
             if(itemsArray.length === 0) { list.innerHTML = `<p style="grid-column:1/-1;text-align:center;">Hech narsa topilmadi...</p>`; return;}
-            list.innerHTML = itemsArray.map(i => `
-                <div class="card">
-                    <img src="${i.i}">
-                    <h4 style="margin:5px 0; color:var(--text);">${i.n}</h4>
-                    <p style="color:var(--main); font-weight:bold;">${i.p.toLocaleString()} so'm</p>
-                    <button class="add-btn" onclick="addToCart('${i.n}', ${i.p})">Savatga</button>
-                </div>
-            `).join('');
+            list.innerHTML = itemsArray.map(i => `<div class="card"><img src="${i.i}"><h4 style="margin:5px 0; color:var(--text);">${i.n}</h4><p style="color:var(--main); font-weight:bold;">${i.p.toLocaleString()} so'm</p><button class="add-btn" onclick="addToCart('${i.n}', ${i.p})">Savatga</button></div>`).join('');
         }
 
-        function addToCart(name, price) {
-            if (cart[name]) cart[name].q++; else cart[name] = { q: 1, p: price };
-            updateCartUI(); if(navigator.vibrate) navigator.vibrate(50);
-        }
-
-        function removeFromCart(name) {
-            if (cart[name]) {
-                cart[name].q--;
-                if(cart[name].q <= 0) delete cart[name];
-                updateCartUI(); if(navigator.vibrate) navigator.vibrate(30);
-            }
-        }
+        function addToCart(name, price) { if (cart[name]) cart[name].q++; else cart[name] = { q: 1, p: price }; updateCartUI(); if(navigator.vibrate) navigator.vibrate(50); }
+        function removeFromCart(name) { if (cart[name]) { cart[name].q--; if(cart[name].q <= 0) delete cart[name]; updateCartUI(); if(navigator.vibrate) navigator.vibrate(30); } }
 
         function updateCartUI() {
-            const box = document.getElementById('cart-content');
-            let html = "", subtotal = 0;
+            const box = document.getElementById('cart-content'); let html = "", subtotal = 0;
             for(let n in cart) {
-                html += `
-                <div class="cart-item">
-                    <span style="flex:1;"><b>${n}</b></span>
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <button onclick="removeFromCart('${n}')" style="border:none; background:#ff4757; color:white; border-radius:5px; width:25px; height:25px; font-weight:bold; cursor:pointer;">-</button>
-                        <span>x${cart[n].q}</span>
-                        <button onclick="addToCart('${n}', ${cart[n].p})" style="border:none; background:#2ecc71; color:white; border-radius:5px; width:25px; height:25px; font-weight:bold; cursor:pointer;">+</button>
-                    </div>
-                    <b style="width:90px; text-align:right;">${(cart[n].q * cart[n].p).toLocaleString()}</b>
-                </div>`;
+                html += `<div class="cart-item"><span style="flex:1;"><b>${n}</b></span><div style="display:flex; align-items:center; gap:10px;"><button onclick="removeFromCart('${n}')" style="border:none; background:#ff4757; color:white; border-radius:5px; width:25px; height:25px; font-weight:bold; cursor:pointer;">-</button><span>x${cart[n].q}</span><button onclick="addToCart('${n}', ${cart[n].p})" style="border:none; background:#2ecc71; color:white; border-radius:5px; width:25px; height:25px; font-weight:bold; cursor:pointer;">+</button></div><b style="width:90px; text-align:right;">${(cart[n].q * cart[n].p).toLocaleString()}</b></div>`;
                 subtotal += cart[n].q * cart[n].p;
             }
             box.innerHTML = html || "Savat bo'sh...";
@@ -386,53 +399,82 @@
 
         function getLocation() {
             if(navigator.vibrate) navigator.vibrate(40);
-            navigator.geolocation.getCurrentPosition(pos => {
-                userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                let R = 6371; 
-                let dLat = (userLoc.lat - shopLat) * Math.PI / 180;
-                let dLon = (userLoc.lng - shopLng) * Math.PI / 180;
-                let a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(shopLat * Math.PI / 180) * Math.cos(userLoc.lat * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
-                distKm = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-                
-                let calculatedCost = Math.round(distKm) * 3000;
-                deliveryCost = calculatedCost < 5000 ? 5000 : calculatedCost; 
-                
-                let prepTime = activeShopType === 'restoran' ? 20 : 5;
-                let travelTime = Math.ceil(distKm * 2.5);
-                estimatedTime = prepTime + travelTime;
-                
-                const info = document.getElementById('dist-info');
-                info.style.display = 'block';
-                info.innerHTML = `
-                    <b style="color:#00838f; font-size:16px;">📍 Sizning manzilingiz aniqlandi!</b><br>
-                    <div style="margin-top:8px; border-top:1px dashed #b2ebf2; padding-top:8px;">
-                        📏 Masofa: <b>${distKm.toFixed(1)} km</b><br>
-                        ⏱️ Tahminiy yetkazish vaqti: <b style="color:#d35400;">~${estimatedTime} daqiqa</b><br>
-                        💸 Dastafka narxi: <b style="color:var(--main); font-size:16px;">${deliveryCost.toLocaleString()} so'm</b>
-                    </div>
-                `;
-                updateCartUI();
-            }, () => alert("Iltimos, manzilni aniqlashga ruxsat bering!"));
+            const locBtn = document.getElementById('locBtn'); locBtn.innerText = "⏳ Aniqlanmoqda...";
+            if (!navigator.geolocation) { useFallbackLocation(); return; }
+            navigator.geolocation.getCurrentPosition(
+                (pos) => { userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude }; calculateDistAndCost(); locBtn.innerText = "📍 Manzil muvaffaqiyatli aniqlandi!"; locBtn.style.background = "#2ecc71"; locBtn.style.color = "white"; }, 
+                (err) => { useFallbackLocation(); }, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+            );
+        }
+
+        function useFallbackLocation() {
+            userLoc = { lat: shopLat + 0.025, lng: shopLng + 0.025 }; 
+            calculateDistAndCost();
+            const locBtn = document.getElementById('locBtn'); locBtn.innerText = "📍 Demo manzil kiritildi!"; locBtn.style.background = "#f39c12"; locBtn.style.color = "white";
+        }
+
+        function calculateDistAndCost() {
+            let R = 6371; let dLat = (userLoc.lat - shopLat) * Math.PI / 180; let dLon = (userLoc.lng - shopLng) * Math.PI / 180;
+            let a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(shopLat * Math.PI / 180) * Math.cos(userLoc.lat * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+            distKm = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            
+            let perKmCost = deliveryType === 'tezkor' ? 3000 : 1500;
+            let minCost = deliveryType === 'tezkor' ? 5000 : 3000;
+            
+            let calculatedCost = Math.round(distKm) * perKmCost;
+            deliveryCost = calculatedCost < minCost ? minCost : calculatedCost; 
+            
+            let prepTime = activeShopType === 'restoran' ? 20 : 5;
+            let travelTime = Math.ceil(distKm * 2.5);
+            let ecoDelay = deliveryType === 'arzon' ? 15 : 0; 
+            estimatedTime = prepTime + travelTime + ecoDelay;
+            
+            let delName = deliveryType === 'tezkor' ? '🚀 Tezkor' : '♻️ Arzon (Eco)';
+            
+            const info = document.getElementById('dist-info');
+            info.style.display = 'block';
+            info.innerHTML = `
+                <b style="color:#00838f; font-size:16px;">📍 Masofa va Narx hisoblandi!</b><br>
+                <div style="margin-top:8px; border-top:1px dashed #b2ebf2; padding-top:8px;">
+                    📏 Do'kongacha masofa: <b>${distKm.toFixed(1)} km</b><br>
+                    ⏱️ Tahminiy vaqt: <b style="color:#d35400;">~${estimatedTime} daqiqa</b><br>
+                    💸 Dastafka [${delName}]: <b style="color:var(--main); font-size:16px;">${deliveryCost.toLocaleString()} so'm</b>
+                </div>
+            `;
+            updateCartUI();
         }
 
         async function sendOrder() {
             let phone = document.getElementById('user-phone').value;
-            if(!userLoc || !phone || Object.keys(cart).length === 0) { return alert("Iltimos, savatni to'ldiring, telefonni yozing va manzilni aniqlang!"); }
-            
+            let payMethod = document.getElementById('pay-method').value;
+            let fileInput = document.getElementById('receipt-upload');
+
+            if(!userLoc || !phone || Object.keys(cart).length === 0) { 
+                return alert("Iltimos, savatni to'ldiring, telefonni yozing va manzilni aniqlang!"); 
+            }
+
+            // KARTA TANLANGANDA CHEK YUKLASH MAJBURIY (!)
+            if(payMethod === "Karta" && fileInput.files.length === 0) {
+                if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                document.getElementById('receipt-upload').style.borderColor = "red";
+                return alert("Iltimos, to'lov qilinganligi haqidagi chek rasmini yuklang!");
+            }
+
             document.getElementById('submitBtn').innerText = "⏳ Jo'natilmoqda...";
 
             let orderDetails = ""; let itemsTotal = 0;
-            for(let n in cart) {
-                orderDetails += `▪️ ${n} (x${cart[n].q}) - ${(cart[n].q * cart[n].p).toLocaleString()} so'm\n`;
-                itemsTotal += cart[n].q * cart[n].p;
-            }
+            for(let n in cart) { orderDetails += `▪️ ${n} (x${cart[n].q}) - ${(cart[n].q * cart[n].p).toLocaleString()} so'm\n`; itemsTotal += cart[n].q * cart[n].p; }
 
-            // TELEGRAM XABARGA DO'KON NOMI HAM QO'SHILDI
+            let delLabel = deliveryType === 'tezkor' ? '🚀 TEZKOR' : '♻️ ARZON (ECO)';
+
             let msg = `🛍 <b>YANGI BUYURTMA</b>\n`;
-            msg += `🏢 Do'kon: <b>${activeShopName}</b> (${activeShopType.toUpperCase()})\n`;
+            msg += `🌍 Hudud: ${currentRegion.toUpperCase()}\n`;
+            msg += `🏢 Do'kon: <b>${activeShopName}</b>\n`;
+            msg += `📦 Dastafka: <b>${delLabel}</b>\n`;
+            msg += `💳 To'lov turi: <b>${payMethod}</b>\n`;
             msg += `📞 Tel: <code>${phone}</code>\n📍 Masofa: ${distKm.toFixed(1)} km\n`;
             msg += `⏱ Vaqt: ~${estimatedTime} daqiqa\n\n`;
-            msg += `📋 <b>Mahsulotlar:</b>\n${orderDetails}\n🚕 Dostavka: ${deliveryCost.toLocaleString()} so'm\n`;
+            msg += `📋 <b>Mahsulotlar:</b>\n${orderDetails}\n🚕 Dastafka: ${deliveryCost.toLocaleString()} so'm\n`;
             msg += `💰 <b>UMUMIY SUMMA: ${(itemsTotal + deliveryCost).toLocaleString()} so'm</b>\n\n`;
             msg += `📍 <a href="http://googleusercontent.com/maps.google.com/?q=${userLoc.lat},${userLoc.lng}">Mijoz manzili (Xarita)</a>`;
 
@@ -440,10 +482,17 @@
             const admin = "6326941673";
 
             try {
-                await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-                    method: "POST", headers: {"Content-Type":"application/json"},
-                    body: JSON.stringify({chat_id: admin, text: msg, parse_mode: "HTML", disable_web_page_preview: false})
-                });
+                if(payMethod === "Karta" && fileInput.files.length > 0) {
+                    let formData = new FormData(); 
+                    formData.append("chat_id", admin); 
+                    formData.append("caption", msg); 
+                    formData.append("parse_mode", "HTML"); 
+                    formData.append("photo", fileInput.files[0]);
+                    await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: "POST", body: formData });
+                } else {
+                    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({chat_id: admin, text: msg, parse_mode: "HTML", disable_web_page_preview: false}) });
+                }
+                
                 confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
                 startTracking();
             } catch(e) { alert("Xatolik! Internetni tekshiring."); document.getElementById('submitBtn').innerText = "🚀 BUYURTMANI TASDIQLASH"; }
@@ -452,20 +501,14 @@
         function startTracking() {
             document.getElementById('main-content').style.display = 'none';
             document.getElementById('tracking-page').style.display = 'flex';
-            
             map = L.map('map').setView([shopLat, shopLng], 14);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-            
             const carIcon = L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/744/744465.png', iconSize: [45, 45] });
             const userIcon = L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', iconSize: [35, 35] });
-
             L.marker([userLoc.lat, userLoc.lng], {icon: userIcon}).addTo(map).bindPopup("Sizning manzilingiz").openPopup();
             carMarker = L.marker([shopLat, shopLng], {icon: carIcon}).addTo(map);
 
-            setTimeout(() => {
-                document.getElementById('track-status').innerHTML = `🚕 Kuryer yo'lda <span style="font-size:14px; color:#888;">(Tahminan ${estimatedTime} daqiqa)</span>`;
-                animateCar(shopLat, shopLng, userLoc.lat, userLoc.lng, 0, 300);
-            }, 2500);
+            setTimeout(() => { document.getElementById('track-status').innerHTML = `🚕 Kuryer yo'lda <span style="font-size:14px; color:#888;">(Tahminan ${estimatedTime} daqiqa)</span>`; animateCar(shopLat, shopLng, userLoc.lat, userLoc.lng, 0, 300); }, 2500);
         }
 
         function animateCar(startLat, startLng, endLat, endLng, step, totalSteps) {
@@ -473,23 +516,15 @@
                 let curLat = startLat + (endLat - startLat) * (step / totalSteps);
                 let curLng = startLng + (endLng - startLng) * (step / totalSteps);
                 carMarker.setLatLng([curLat, curLng]);
-                
                 if(step % 5 === 0) map.panTo([curLat, curLng], {animate: true, duration: 0.2});
-                
                 setTimeout(() => animateCar(startLat, startLng, endLat, endLng, step + 1, totalSteps), 30);
-            } else {
-                document.getElementById('track-status').innerText = "✅ Kuryer manzilingizga yetib keldi!";
-                showSmsAlert();
-            }
+            } else { document.getElementById('track-status').innerText = "✅ Kuryer manzilingizga yetib keldi!"; showSmsAlert(); }
         }
 
         function showSmsAlert() {
-            const sms = document.getElementById('sms-alert');
-            sms.classList.add('show');
+            const sms = document.getElementById('sms-alert'); sms.classList.add('show');
             if(navigator.vibrate) navigator.vibrate([400, 200, 400, 200, 600]);
-            
             carMarker.bindPopup("<b style='color:#00c853;font-size:16px;'>📍 Men yetib keldim!</b>").openPopup();
-            
             setTimeout(() => sms.classList.remove('show'), 10000); 
         }
     </script>
