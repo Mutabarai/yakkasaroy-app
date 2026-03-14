@@ -3,530 +3,825 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tezkor Dastafka - SuperApp</title>
+    <title>Tezkor Dastafka - SuperApp Web</title>
     
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        :root { --main: #800000; --bg: #f8f9fa; --white: #ffffff; --accent: #d4af37; --text: #333; --border: #eee; }
-        body.dark-mode { --bg: #121212; --white: #1e1e1e; --text: #f5f5f5; --border: #333; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); color: var(--text); overflow-x: hidden; transition: 0.3s; }
+        /* --- ASOSIY RANGLAR --- */
+        :root { 
+            --primary: #0ca651; 
+            --primary-light: #e6f6ec;
+            --bg-color: #f4f7f6; 
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --white: #ffffff;
+            --danger: #ff4757;
+            --shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
 
-        /* --- YON MENYU --- */
-        #sidebar { position: fixed; left: -280px; top: 0; width: 260px; height: 100%; background: var(--white); z-index: 25000; transition: 0.3s ease-in-out; box-shadow: 2px 0 15px rgba(0,0,0,0.3); overflow-y: auto; display: flex; flex-direction: column; }
-        #sidebar.active { left: 0; }
-        #sidebar-overlay { position: fixed; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 24000; display: none; backdrop-filter: blur(2px); }
-        #sidebar-overlay.active { display: block; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body { background: var(--bg-color); color: var(--text-dark); overflow-x: hidden; }
+
+        /* --- ASOSIY LAYOUT --- */
+        .app-container { display: flex; width: 100%; min-height: 100vh; overflow: hidden; }
+
+        /* --- YON MENYU (SIDEBAR) --- */
+        #sidebar { 
+            width: 260px; background: var(--primary); color: var(--white);
+            position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto;
+            z-index: 2000; transition: left 0.3s ease; display: flex; flex-direction: column;
+        }
+        #sidebar.closed { left: -260px; }
         
-        .sb-header { padding: 25px 20px; background: var(--main); color: white; display: flex; align-items: center; gap: 15px; }
-        .sb-profile-pic { width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; color: var(--main); }
-        .sb-title { padding: 15px 20px 5px; font-size: 13px; text-transform: uppercase; color: #888; font-weight: bold; letter-spacing: 1px; }
-        .sb-item { padding: 15px 20px; border-bottom: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 16px; color: var(--text); transition: 0.2s;}
-        .sb-item:hover { background: rgba(0,0,0,0.02); }
-        .sb-item:active { background: var(--bg); }
-        .sb-item.active-region { background: rgba(212, 175, 55, 0.2); border-left: 4px solid var(--accent); font-weight: bold; color: var(--main); }
+        .sb-profile { padding: 30px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sb-profile-img { width: 50px; height: 50px; background: var(--white); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; color: var(--primary); }
+        .sb-profile-info h3 { font-size: 16px; font-weight: 600; }
+        .sb-profile-info p { font-size: 11px; opacity: 0.8; }
+        
+        .sb-menu { padding: 20px 0; flex: 1; }
+        .sb-item { padding: 15px 25px; display: flex; align-items: center; gap: 15px; font-size: 15px; cursor: pointer; transition: 0.2s; opacity: 0.9; }
+        .sb-item:hover, .sb-item.active { background: rgba(255,255,255,0.1); opacity: 1; padding-left: 30px; border-left: 4px solid var(--white);}
         .sb-item i { font-size: 20px; width: 25px; text-align: center; }
 
-        /* --- XABARNOMA --- */
-        #sms-alert { position: fixed; top: -150px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-left: 6px solid #00c853; box-shadow: 0 15px 35px rgba(0,0,0,0.2); padding: 20px; border-radius: 15px; z-index: 30000; transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 15px; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.4); }
-        body.dark-mode #sms-alert { background: rgba(30, 30, 30, 0.85); color: white; border: 1px solid rgba(255,255,255,0.1); }
-        #sms-alert.show { top: 20px; }
+        /* --- ASOSIY KONTENT QISMI --- */
+        #main-content { 
+            flex: 1; margin-left: 260px; position: relative; 
+            height: 100vh; display: flex; flex-direction: column; transition: margin-left 0.3s ease;
+            overflow-y: auto; overflow-x: hidden;
+        }
+        #main-content.expanded { margin-left: 0; }
 
-        /* --- HEADER & SHIOR --- */
-        header { background: var(--main); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 2000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .slogan { text-align: center; padding: 10px; font-size: 13px; font-weight: 800; color: #800000; background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); background-size: 200% 200%; animation: gradientShift 4s ease infinite; text-transform: uppercase; letter-spacing: 1px;}
-        .region-banner { text-align: center; background: #27ae60; color: white; padding: 5px; font-size: 12px; font-weight: bold; letter-spacing: 1px; border-bottom: 3px solid var(--accent); box-shadow: 0 4px 15px rgba(0,0,0,0.1);}
-        @keyframes gradientShift { 0% {background-position: 0% 50%} 50% {background-position: 100% 50%} 100% {background-position: 0% 50%} }
+        /* TEPPA QISM (HEADER) */
+        .header {
+            height: 70px; background: var(--white); display: flex; justify-content: space-between; 
+            align-items: center; padding: 0 30px; position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .hamburger { font-size: 26px; font-weight: bold; color: var(--primary); cursor: pointer; user-select: none;}
+        .header-location { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .header-location i { color: var(--primary); font-size: 20px; }
+        .header-location p { font-size: 11px; color: var(--text-gray); margin-bottom: -3px;}
+        .header-location h4 { font-size: 14px; font-weight: 600; }
+        .header-bell { width: 40px; height: 40px; background: var(--bg-color); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: var(--primary); cursor: pointer; }
 
-        /* --- ASOSIY QISMLAR --- */
-        .container { padding: 15px; max-width: 600px; margin: 0 auto; min-height: 70vh; display: flex; flex-direction: column; }
+        /* SHIOR (SLOGAN) */
+        .slogan-banner {
+            background: var(--primary-light); color: var(--primary);
+            text-align: center; padding: 10px; font-size: 13px; font-weight: 600;
+            letter-spacing: 0.5px; border-bottom: 1px solid rgba(12, 166, 81, 0.2);
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+
+        /* KONTENT MAYDONI */
+        .content-area { padding: 25px 30px 40px; max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; }
+
+        /* QIDIRUV */
+        .search-box { 
+            display: flex; align-items: center; background: var(--white); border-radius: 14px; 
+            padding: 12px 20px; box-shadow: var(--shadow); margin-bottom: 30px;
+        }
+        .search-box i { color: var(--text-gray); font-size: 18px; margin-right: 10px; }
+        .search-box input { border: none; outline: none; width: 100%; font-size: 15px; color: var(--text-dark); }
+        .search-filter { background: var(--primary); color: var(--white); width: 40px; height: 40px; border-radius: 10px; display: flex; justify-content: center; align-items: center; margin-left: 10px; cursor: pointer;}
+
+        /* BO'LIM SARLAVHALARI */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .section-header h3 { font-size: 18px; font-weight: 600; }
+        .section-header span { font-size: 13px; color: var(--primary); cursor: pointer; font-weight: 500;}
+
+        /* 1. KATEGORIYALAR */
+        .categories-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; margin-bottom: 35px; }
+        .category-item { background: var(--white); padding: 15px 10px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; box-shadow: var(--shadow); border: 1px solid transparent;}
+        .category-item:hover { border-color: var(--primary); transform: translateY(-3px);}
+        .cat-icon-box { width: 55px; height: 55px; background: var(--primary-light); border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 26px; transition: 0.3s; }
+        .category-item:hover .cat-icon-box { background: var(--primary); color: var(--white); }
+        .category-item span { font-size: 12px; font-weight: 600; text-align: center;}
+
+        /* 2. CHEGIRMALAR */
+        .deals-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-bottom: 35px; }
+        .deal-card { 
+            background: linear-gradient(to right, var(--primary), #20c968); 
+            border-radius: 20px; padding: 25px; color: var(--white); display: flex; 
+            justify-content: space-between; align-items: center; position: relative; overflow: hidden;
+            box-shadow: 0 10px 20px rgba(12, 166, 81, 0.15);
+        }
+        .deal-info h4 { font-size: 24px; font-weight: 700; margin-bottom: 5px; }
+        .deal-info p { font-size: 13px; opacity: 0.9; margin-bottom: 15px;}
+        .deal-btn { background: var(--white); color: var(--primary); border: none; padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .deal-img { font-size: 60px; z-index: 1; }
+
+        /* 3. HUDUD TANLASH */
+        .regions-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-bottom: 30px;}
+        .region-card { 
+            background: var(--white); border-radius: 16px; padding: 15px 20px; 
+            display: flex; align-items: center; gap: 15px; box-shadow: var(--shadow); 
+            cursor: pointer; border: 1px solid transparent; transition: 0.2s;
+        }
+        .region-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
+        .region-card.active { border-color: var(--primary); background: var(--primary-light); }
+        .region-icon { width: 45px; height: 45px; background: #f1f5f9; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 22px; }
+        .region-card.active .region-icon { background: var(--primary); color: white; }
+        .region-info { flex: 1; }
+        .region-info h4 { font-size: 15px; font-weight: 600; }
+        .region-info p { font-size: 12px; color: var(--text-gray); }
+
+        /* 4. MAHSULOTLAR (GRID) */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .product-card { background: var(--white); border-radius: 16px; padding: 15px; box-shadow: var(--shadow); display: flex; flex-direction: column; transition: 0.2s; border: 1px solid transparent;}
+        .product-card:hover { border-color: var(--primary); transform: translateY(-4px); }
+        .product-img-wrapper { width: 100%; height: 140px; border-radius: 12px; background: #f8fbfa; display: flex; justify-content: center; align-items: center; font-size: 60px; margin-bottom: 15px; overflow: hidden;}
+        .product-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .product-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 5px; line-height: 1.3;}
+        .product-card p { font-size: 12px; color: var(--text-gray); margin-bottom: 15px; }
+        .product-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+        .product-price { font-size: 16px; font-weight: 700; color: var(--text-dark); }
+        .add-to-cart-btn { width: 36px; height: 36px; background: var(--primary); color: var(--white); border: none; border-radius: 10px; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s;}
         
-        .main-card { background: var(--white); border-radius: 15px; padding: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 20px; cursor: pointer; border: 1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.2s;}
-        .main-card:hover { box-shadow: 0 6px 15px rgba(0,0,0,0.1); transform: translateY(-2px); }
-        .main-card:active { transform: scale(0.97); }
-        .main-card img { width: 60px; }
+        /* SAHIFALAR UCHUN */
+        .page-content { display: none; }
+        .back-btn { background: var(--white); border: 1px solid #e2e8f0; padding: 10px 20px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 25px;}
+        .back-btn:hover { background: var(--bg-color); }
 
-        /* --- DO'KONLAR RO'YXATI --- */
-        .store-card { background: var(--white); padding: 15px; border-radius: 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid var(--border); cursor: pointer; transition: 0.2s;}
-        .store-card:hover { border-color: var(--main); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
-        .store-card:active { transform: scale(0.97); }
-        .store-icon { font-size: 35px; background: var(--bg); padding: 12px; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center;}
-        .store-info { flex: 1; }
-        .store-info h3 { margin: 0; font-size: 17px; color: var(--main); }
-        .store-info p { margin: 3px 0 0 0; font-size: 13px; color: #888; }
-        .store-rating { font-size: 13px; font-weight: bold; color: #f39c12; background: rgba(243, 156, 18, 0.1); padding: 3px 8px; border-radius: 10px; margin-top: 5px; display: inline-block;}
-
-        /* --- MAHSULOTLAR VA SAVAT --- */
-        .ai-search-box { background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); border: 2px solid #3498db; border-radius: 15px; padding: 15px; margin-bottom: 20px; position: relative; }
-        .ai-search-input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 10px; font-size: 15px; outline: none; box-sizing: border-box; background: white; }
-        .ai-badge { position: absolute; top: -12px; left: 15px; background: #3498db; color: white; font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: bold; }
-
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-top: 15px; }
-        .card { background: var(--white); border-radius: 12px; padding: 12px; text-align: center; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s;}
-        .card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .card img { width: 100%; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
-        .card h4 { margin: 5px 0; font-size: 14px; }
-        .add-btn { background: var(--main); color: white; border: none; width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.2s;}
-        .add-btn:hover { background: #600000; }
-
-        .order-box { background: var(--white); padding: 20px; border-radius: 18px; margin-top: 20px; border-top: 5px solid var(--accent); box-shadow: 0 5px 20px rgba(0,0,0,0.08); }
-        #cart-content { max-height: 220px; overflow-y: auto; padding-right: 5px; }
-        #cart-content::-webkit-scrollbar { width: 4px; }
-        #cart-content::-webkit-scrollbar-thumb { background: var(--main); border-radius: 10px; }
-        .cart-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #ddd; font-size: 14px; align-items: center;}
+        /* SAVATCHA FORMASI */
+        .checkout-container { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 30px; max-width: 600px; margin-left: auto; margin-right: auto;}
+        .cart-box { background: var(--white); border-radius: 20px; padding: 25px; box-shadow: var(--shadow); }
         
-        .delivery-options { display: flex; gap: 10px; margin: 15px 0; }
-        .del-option { flex: 1; border: 2px solid var(--border); border-radius: 12px; padding: 12px 10px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; background: var(--white); }
-        .del-option.active { border-color: var(--main); background: rgba(128, 0, 0, 0.05); }
-        .del-icon { font-size: 26px; }
-        .del-text { line-height: 1.3; }
-        .del-text b { font-size: 14px; color: var(--main); }
+        /* 100+ MAHSULOT UCHUN SCROLLBAR */
+        #cart-content { max-height: 300px; overflow-y: auto; padding-right: 5px; }
+        #cart-content::-webkit-scrollbar { width: 6px; }
+        #cart-content::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        #cart-content::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+        .cart-item-name { font-size: 14px; font-weight: 600; }
+        .cart-item-price { font-size: 13px; color: var(--primary); font-weight: 600;}
+        .cart-controls { display: flex; align-items: center; gap: 12px; background: var(--bg-color); padding: 5px; border-radius: 8px;}
+        .ctrl-btn { width: 26px; height: 26px; background: var(--white); border: none; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
+        .ctrl-qty { font-size: 14px; font-weight: 600; width: 20px; text-align: center;}
+
+        .form-label { font-size: 13px; font-weight: 600; color: var(--text-gray); margin: 20px 0 8px; display: block; }
+        .inp, .pay-select { width: 100%; padding: 14px; background: var(--bg-color); border: 1px solid #e2e8f0; border-radius: 12px; font-size: 14px; outline: none; transition: 0.3s;}
+        .inp:focus { border-color: var(--primary); background: var(--white);}
         
-        #eco-info { display: none; font-size: 13px; background: #e8f5e9; padding: 12px; border-radius: 10px; color: #2e7d32; margin-bottom: 15px; border: 1px dashed #a5d6a7; line-height: 1.5;}
+        /* DASTAFKA TURLARI */
+        .delivery-options { display: flex; gap: 15px; margin-bottom: 15px; }
+        .del-option { flex: 1; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; background: var(--white);}
+        .del-option.active { border-color: var(--primary); background: var(--primary-light); }
+        .del-option h4 { font-size: 15px; color: var(--text-dark); margin-bottom: 4px;}
+        .del-option p { font-size: 12px; color: var(--text-gray); }
 
-        /* --- TO'LOV VA CHEK (YANGI) --- */
-        .pay-select { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font-size: 16px; font-weight: bold; outline: none;}
-        #card-details-box { display: none; background: rgba(212, 175, 55, 0.1); border: 2px dashed var(--accent); padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 15px; }
-        .copy-btn { background: var(--main); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; margin-left: 10px; transition: 0.2s;}
-        .copy-btn:active { transform: scale(0.9); background: var(--accent); }
+        #eco-info { display: none; background: #e6f6ec; border: 1px solid #0ca651; color: #0ca651; padding: 12px 15px; border-radius: 12px; font-size: 12px; margin-bottom: 20px; line-height: 1.5; }
+        #card-details-box { display: none; background: #fffbeb; border: 1px dashed #f59e0b; padding: 20px; border-radius: 12px; text-align: center; margin-top: 15px; }
+        
+        .main-btn { width: 100%; padding: 16px; background: var(--primary); color: var(--white); border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 25px; transition: 0.2s; box-shadow: 0 5px 15px rgba(12, 166, 81, 0.3);}
+        .main-btn:active { transform: scale(0.98); }
+        .loc-btn { background: var(--white); color: var(--text-dark); border: 1px solid #e2e8f0; width: 100%; padding: 15px; border-radius: 12px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; margin-top: 10px;}
 
-        .inp { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid var(--border); border-radius: 10px; box-sizing: border-box; font-size: 16px; background: var(--bg); color: var(--text); outline: none;}
-        .btn-send { background: var(--accent); color: var(--main); border: none; width: 100%; padding: 18px; border-radius: 12px; font-weight: bold; font-size: 18px; cursor: pointer; margin-top: 15px; transition: 0.2s;}
-        .btn-send:active { transform: scale(0.95); }
-        .btn-loc { background: white; border: 2px solid var(--main); color: var(--main); font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; padding: 14px; border-radius: 10px; font-size: 16px; margin-top: 5px;}
-        .btn-loc:hover { background: var(--bg); }
+        /* TRACKING XARITA */
+        #tracking-page { display: none; height: 100%; flex-direction: column; align-items: center;}
+        #map { width: 100%; height: 50vh; min-height: 350px; border-radius: 20px; border: 1px solid #e2e8f0; margin-bottom: 20px; z-index: 10;}
 
-        #dist-info { margin-top: 15px; padding: 15px; background: #e0f7fa; border-radius: 10px; font-size: 15px; color: #006064; display: none; text-align: left; border: 1px solid #b2ebf2; line-height: 1.6; }
+        /* PASTKI NAVIGATSIYA (FAQAT MOBIL UCHUN) */
+        .bottom-nav { display: none; }
+        #sidebar-overlay-mobile { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 1999;}
 
-        .partner-footer { background: var(--white); margin-top: 30px; padding: 30px 20px; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.08); border: 1px solid var(--border); border-top: 5px solid #3498db; margin-bottom: 20px;}
-        .partner-footer h3 { margin: 0 0 10px 0; color: var(--main); font-size: 20px; }
-        .partner-footer p { font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.5; }
-        .tg-btn { display: inline-block; background: #0088cc; color: white; padding: 14px 30px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 16px; transition: 0.2s; box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4); }
-        .tg-btn:active { transform: scale(0.95); }
+        /* =========================================================
+           RESPONSIVE DIZAYN (MOBIL TELEFONLAR UCHUN)
+           ========================================================= */
+        @media (max-width: 768px) {
+            #sidebar { left: -100%; width: 280px; box-shadow: none; border-radius: 0 20px 20px 0;}
+            #sidebar.active { left: 0; box-shadow: 5px 0 25px rgba(0,0,0,0.2); }
+            #sidebar-overlay-mobile.active { display: block; }
+            
+            #main-content { margin-left: 0 !important; padding-bottom: 80px; } 
+            .header { padding: 0 20px; }
+            .content-area { padding: 20px; }
+            
+            .categories-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+            .category-item { padding: 10px 5px; }
+            .cat-icon-box { width: 45px; height: 45px; font-size: 22px; }
+            .category-item span { font-size: 10px; }
 
-        #tracking-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 5000; flex-direction: column; }
-        #map { flex: 1; width: 100%; }
-        .status-bar { padding: 20px; background: var(--white); border-bottom: 1px solid var(--border); font-size: 18px; text-align: center; }
+            .deals-grid { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 10px;}
+            .deal-card { min-width: 280px; scroll-snap-align: center; }
+
+            .products-grid { grid-template-columns: 1fr 1fr; gap: 15px; }
+            .product-img-wrapper { height: 100px; font-size: 40px;}
+
+            .bottom-nav {
+                display: flex; position: fixed; bottom: 0; left: 0; width: 100%; height: 70px;
+                background: var(--white); justify-content: space-around; align-items: center; 
+                border-top-left-radius: 20px; border-top-right-radius: 20px; 
+                box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 1000;
+            }
+            .b-nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-gray); cursor: pointer; font-size: 20px;}
+            .b-nav-item span { font-size: 10px; font-weight: 500; }
+            .b-nav-item.active { color: var(--primary); }
+        }
     </style>
 </head>
 <body>
 
-    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div class="app-container">
+    
+    <div id="sidebar-overlay-mobile" onclick="toggleSidebar()"></div>
+
     <div id="sidebar">
-        <div class="sb-header">
-            <div class="sb-profile-pic">👤</div>
-            <div>
-                <div style="font-weight:bold; font-size:18px;">Mo'tabar</div>
-                <div style="font-size:13px; color: #ffeb3b;">Platforma Asoschisi</div>
+        <div class="sb-profile">
+            <div class="sb-profile-img">👤</div>
+            <div class="sb-profile-info">
+                <h3>Mo'tabar</h3>
+                <p>Platforma Asoschisi</p>
             </div>
         </div>
-        
-        <div class="sb-title">Asosiy sozlamalar</div>
-        <div class="sb-item" onclick="alert('Admin Panel faqat yopiq kod orqali ochiladi.'); toggleSidebar();"><i>⚙️</i> Admin Paneli</div>
-        <div class="sb-item" onclick="toggleTheme(); toggleSidebar();"><i>🌙</i> Tun/Kun rejimi</div>
-        
-        <div class="sb-title">📍 Hududni tanlash</div>
-        <div class="sb-item active-region" id="reg-urgut" onclick="setRegion('urgut', 'Urgut tumani')"><i>🏘️</i> Tumanimdagi do'konlar (Urgut)</div>
-        <div class="sb-item" id="reg-samarqand" onclick="setRegion('samarqand', 'Samarqand viloyati')"><i>🏙️</i> Viloyatdagi do'konlar (Samarqand)</div>
-        <div class="sb-item" id="reg-respublika" onclick="setRegion('respublika', 'Respublika (O\'zbekiston)')"><i>🇺🇿</i> Respublikadagi do'konlar</div>
-
-        <div class="sb-title">Kategoriyalar</div>
-        <div class="sb-item" onclick="openCategory('market', 'Oziq-ovqat Do\'konlari'); toggleSidebar();"><i>🛒</i> Oziq-ovqat</div>
-        <div class="sb-item" onclick="openCategory('restoran', 'Restoranlar'); toggleSidebar();"><i>🍽️</i> Restoranlar</div>
-        <div class="sb-item" onclick="openCategory('texnika', 'Maishiy Texnikalar'); toggleSidebar();"><i>📺</i> Texnika</div>
-        <div class="sb-item" onclick="openCategory('qurilish', 'Qurilish Mollari'); toggleSidebar();"><i>🧱</i> Qurilish</div>
-        <div class="sb-item" onclick="openCategory('parfyum', 'Parfyumeriya'); toggleSidebar();"><i>🧴</i> Parfyumeriya</div>
-    </div>
-
-    <div id="sms-alert">
-        <div style="font-size: 40px; text-shadow: 0 4px 10px rgba(0,0,0,0.2);">📦</div>
-        <div>
-            <b style="color: #00c853; font-size: 18px; letter-spacing: 0.5px;">Dastafkangiz yetib keldi!</b><br>
-            <span style="font-size: 14px; opacity: 0.8; margin-top: 5px; display: inline-block;">Kuryer eshik oldida kutyapti. Iltimos, buyurtmani qabul qilib oling.</span>
+        <div class="sb-menu">
+            <div class="sb-item active" onclick="goBackToHome(); toggleSidebarMobile();"><i>🏠</i> Bosh sahifa</div>
+            <div class="sb-item" onclick="openCategory('market', 'Tanlanganlar'); toggleSidebarMobile();"><i>❤️</i> Sevimlilar</div>
+            <div class="sb-item" onclick="scrollToCart(); toggleSidebarMobile();"><i>🛒</i> Savat</div>
+            <div class="sb-item" onclick="alert('Buyurtmalar tarixi'); toggleSidebarMobile();"><i>📦</i> Buyurtmalar tarixi</div>
+            
+            <div class="sb-item" onclick="openComplaint(); toggleSidebarMobile();" style="margin-top: 15px; border-left: 3px solid var(--danger);"><i>⚖️</i> Rasmiy shikoyat</div>
+            
+            <div class="sb-item" onclick="alert('Admin Panel'); toggleSidebarMobile();" style="margin-top: 15px;"><i>⚙️</i> Sozlamalar</div>
+            <div class="sb-item" style="margin-top: 30px;"><i>🚪</i> Chiqish</div>
         </div>
     </div>
 
-    <header>
-        <button style="background:none; border:none; color:white; font-size:26px; cursor:pointer;" onclick="toggleSidebar()">☰</button>
-        <b style="font-size: 20px;">TEZKOR DASTAFKA</b>
-        <div style="width: 26px;"></div>
-    </header>
-    <div class="slogan">⚡ Sizning vaqtingizni tejash – bizning oliy maqsadimiz! ⚡</div>
-    <div class="region-banner" id="top-region-banner">📍 Tanlangan hudud: URGUT TUMANI</div>
-
-    <div class="container" id="main-content">
+    <div id="main-content">
         
-        <div id="home-page">
-            <div class="main-card" onclick="openCategory('market', 'Oziq-ovqat Do\'konlari')">
-                <img src="https://cdn-icons-png.flaticon.com/512/3081/3081840.png">
-                <div><h3>Oziq-ovqat do'konlari</h3><p style="margin:0; font-size:12px; color: #666;">Makro, Korzinka, Havas...</p></div>
-            </div>
-            <div class="main-card" onclick="openCategory('restoran', 'Restoran va Kafelar')">
-                <img src="https://cdn-icons-png.flaticon.com/512/3170/3170733.png">
-                <div><h3>Restoranlar</h3><p style="margin:0; font-size:12px; color: #666;">Rayhon, Osh Markazi, KFC...</p></div>
-            </div>
-            <div class="main-card" onclick="openCategory('texnika', 'Maishiy Texnikalar')">
-                <img src="https://cdn-icons-png.flaticon.com/512/2806/2806129.png">
-                <div><h3>Maishiy texnikalar</h3><p style="margin:0; font-size:12px; color: #666;">Texnomart, MediaPark, Ishonch</p></div>
-            </div>
-            <div class="main-card" onclick="openCategory('qurilish', 'Qurilish Mollari')">
-                <img src="https://cdn-icons-png.flaticon.com/512/2236/2236081.png">
-                <div><h3>Qurilish mollari</h3><p style="margin:0; font-size:12px; color: #666;">Sement, bo'yoq, asbob-uskunalar</p></div>
-            </div>
-            <div class="main-card" onclick="openCategory('parfyum', 'Parfyumeriya Do\'konlari')">
-                <img src="https://cdn-icons-png.flaticon.com/512/3353/3353131.png">
-                <div><h3>Parfyumeriya</h3><p style="margin:0; font-size:12px; color: #666;">Bellstore, Parfum Gallery...</p></div>
-            </div>
-            
-            <div class="partner-footer">
-                <h3>Biz bilan biznesingizni o'stiring! 🚀</h3>
-                <p>O'z do'koningizni platformamizga qo'shmoqchimisiz? Yoki restoran, qurilish mollari sotuvchisimisiz? Hoziroq biz bilan bog'laning va savdoni oshiring!</p>
-                <a href="https://t.me/ochildiyeva_M_u_t_a_b_a_r" target="_blank" class="tg-btn">✈️ Biz bilan bog'lanish</a>
-            </div>
-        </div>
-
-        <div id="shop-list-page" style="display:none;">
-            <button onclick="goBackToHome()" style="background:none; border:none; color:var(--main); font-weight:bold; cursor:pointer; font-size: 16px; padding: 10px 0; margin-bottom: 10px;">⬅️ Kategoriyalarga qaytish</button>
-            <h2 id="category-title" style="color: var(--main); margin-top: 0;"></h2>
-            <div id="shops-container"></div>
-        </div>
-
-        <div id="shop-page" style="display:none;">
-            <button onclick="goBackToShopList()" style="background:none; border:none; color:var(--main); font-weight:bold; cursor:pointer; font-size: 16px; padding: 10px 0;">⬅️ Do'konlarga qaytish</button>
-            <h2 id="shop-title" style="text-align:center; color: var(--main); border-bottom: 2px solid var(--accent); padding-bottom: 10px;"></h2>
-            
-            <div class="ai-search-box">
-                <span class="ai-badge">🤖 AI Yordamchi</span>
-                <input type="text" id="ai-input" class="ai-search-input" placeholder="Nimani xohlaysiz? Qidiring..." oninput="simulateAI()">
-            </div>
-
-            <div class="products-grid" id="prod-list"></div>
-
-            <div class="order-box">
-                <h3 style="margin-top: 0; border-bottom: 2px solid var(--border); padding-bottom: 10px;">🛒 Aqlli Savatcha</h3>
-                <div id="cart-content">Savat bo'sh...</div>
-                
-                <div class="delivery-options">
-                    <label class="del-option active" id="opt-tezkor" onclick="setDeliveryType('tezkor')">
-                        <div class="del-icon">🚀</div>
-                        <div class="del-text"><b>Tezkor</b><br><span style="font-size:11px; color:#666;">1 km = 3000 so'm</span></div>
-                    </label>
-                    <label class="del-option" id="opt-arzon" onclick="setDeliveryType('arzon')">
-                        <div class="del-icon">♻️</div>
-                        <div class="del-text"><b>Arzon (Eco)</b><br><span style="font-size:11px; color:#666;">1 km = 1500 so'm</span></div>
-                    </label>
-                </div>
-                
-                <div id="eco-info">
-                    <b>ℹ️ Nega arzon?</b> Sizning buyurtmangiz shu atrofdagi boshqa buyurtmalar bilan bitta kuryerga biriktiriladi. Yetkazish vaqti sal ko'proq, lekin narxi <b>50% arzon!</b>
-                </div>
-
-                <div id="dist-info"></div>
-                
-                <h2 id="total-price" style="text-align: right; color: var(--main); margin: 20px 0;">Jami: 0 so'm</h2>
-                
-                <label style="font-weight: bold; color: var(--text); display: block; margin-top: 15px;">💳 To'lov turi:</label>
-                <select id="pay-method" class="pay-select" onchange="toggleCardBox()">
-                    <option value="Naqd">💵 Naqd pul (Kuryerga)</option>
-                    <option value="Karta">💳 Karta (Payme/Click)</option>
-                </select>
-
-                <div id="card-details-box">
-                    <p style="margin: 0 0 5px 0; color: var(--text); font-size: 13px;">To'lovni quyidagi kartaga o'tkazing:</p>
-                    <div style="font-size: 20px; color: var(--main); font-weight: bold; letter-spacing: 1px; margin: 10px 0; display:flex; justify-content:center; align-items:center;">
-                        <span id="cardNumberTxt">980160444804606</span>
-                        <button class="copy-btn" onclick="copyCard()">Nusxalash</button>
+        <header class="header">
+            <div class="header-left">
+                <i class="hamburger" onclick="toggleSidebar()">☰</i>
+                <div class="header-location">
+                    <i>📍</i>
+                    <div>
+                        <p>Lokatsiya</p>
+                        <h4 id="top-loc-text">Urgut tumani</h4>
                     </div>
-                    <div style="font-weight:bold; color: var(--text);">Ochildiyeva Mo'tabar</div>
-                    <label style="font-weight: bold; font-size: 13px; color: #d35400; display: block; margin-top: 15px;">⚠️ To'lov chekini yuklang (Majburiy):</label>
-                    <input type="file" id="receipt-upload" accept="image/*" class="inp" style="padding: 10px; background: white; border: 2px dashed #d35400;">
+                </div>
+            </div>
+            <div class="header-bell">🔔</div>
+        </header>
+
+        <div class="slogan-banner">
+            <span>⚡ Sizning vaqtingizni tejash – bizning oliy maqsadimiz!</span>
+        </div>
+
+        <div class="content-area">
+            
+            <div id="home-page" class="page-content" style="display: block; padding: 0;">
+                
+                <div class="search-box">
+                    <i>🔍</i>
+                    <input type="text" placeholder="Oziq-ovqat, restoran, texnika...">
+                    <div class="search-filter">⚙️</div>
+                </div>
+
+                <div class="section-header">
+                    <h3>Kategoriyalar</h3>
+                    <span>Barchasi</span>
+                </div>
+                <div class="categories-grid">
+                    <div class="category-item" onclick="openCategory('market', 'Oziq-ovqat')">
+                        <div class="cat-icon-box">🛒</div><span>Oziq-ovqat</span>
+                    </div>
+                    <div class="category-item" onclick="openCategory('restoran', 'Restoranlar')">
+                        <div class="cat-icon-box" style="background:#fff3e0; color:#ff9800;">🍽️</div><span>Restoranlar</span>
+                    </div>
+                    <div class="category-item" onclick="openCategory('texnika', 'Texnika')">
+                        <div class="cat-icon-box" style="background:#e3f2fd; color:#2196f3;">📺</div><span>Texnika</span>
+                    </div>
+                    <div class="category-item" onclick="openCategory('qurilish', 'Qurilish')">
+                        <div class="cat-icon-box" style="background:#fce4ec; color:#e91e63;">🧱</div><span>Qurilish</span>
+                    </div>
+                    <div class="category-item" onclick="openCategory('parfyum', 'Parfyumeriya')">
+                        <div class="cat-icon-box" style="background:#f3e5f5; color:#9c27b0;">🧴</div><span>Parfyum</span>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h3>Chegirmalar</h3>
+                    <span>Ko'proq ko'rish</span>
+                </div>
+                <div class="deals-grid">
+                    <div class="deal-card">
+                        <div class="deal-info">
+                            <h4>50% OFF</h4>
+                            <p>Oziq-ovqat mahsulotlariga</p>
+                            <button class="deal-btn" onclick="openCategory('market', 'Oziq-ovqat')">Xarid qilish</button>
+                        </div>
+                        <div class="deal-img">🛒</div>
+                    </div>
+                    <div class="deal-card" style="background: linear-gradient(to right, #ff9800, #ffc107);">
+                        <div class="deal-info">
+                            <h4>Bepul</h4>
+                            <p>Restoranlardan yetkazish</p>
+                            <button class="deal-btn" style="color:#ff9800;" onclick="openCategory('restoran', 'Restoranlar')">Buyurtma berish</button>
+                        </div>
+                        <div class="deal-img">🍔</div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h3>Hududingizni tanlang</h3>
+                </div>
+                <div class="regions-list">
+                    <div class="region-card active" id="reg-urgut" onclick="setRegion('urgut', 'Urgut tumani')">
+                        <div class="region-icon">🏘️</div>
+                        <div class="region-info"><h4>Urgut tumani</h4><p>Tezkor yetkazish</p></div>
+                        <div style="color:var(--primary); display:none;" class="check-icon">✔️</div>
+                    </div>
+                    <div class="region-card" id="reg-samarqand" onclick="setRegion('samarqand', 'Samarqand shahri')">
+                        <div class="region-icon">🏙️</div>
+                        <div class="region-info"><h4>Samarqand shahri</h4><p>Shahar bo'ylab</p></div>
+                        <div style="color:var(--primary); display:none;" class="check-icon">✔️</div>
+                    </div>
+                    <div class="region-card" id="reg-respublika" onclick="setRegion('respublika', 'Respublika')">
+                        <div class="region-icon">🇺🇿</div>
+                        <div class="region-info"><h4>Respublika</h4><p>Viloyatlararo</p></div>
+                        <div style="color:var(--primary); display:none;" class="check-icon">✔️</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="shop-list-page" class="page-content" style="padding: 0;">
+                <button class="back-btn" onclick="goBackToHome()">❮ Orqaga qaytish</button>
+                <h2 id="category-title" style="margin-bottom: 25px; font-weight: 700;"></h2>
+                <div class="regions-list" id="shops-container"></div>
+            </div>
+
+            <div id="shop-page" class="page-content" style="padding: 0;">
+                <button class="back-btn" onclick="goBackToShopList()">❮ Do'konlarga qaytish</button>
+                <h2 id="shop-title" style="margin-bottom: 20px; font-weight: 700;"></h2>
+                
+                <div class="search-box" style="margin-bottom: 25px;">
+                    <i>🔍</i><input type="text" id="ai-input" placeholder="Mahsulot qidiring..." oninput="simulateAI()">
                 </div>
                 
-                <input type="tel" id="user-phone" class="inp" placeholder="📞 Telefon raqamingiz">
-                <button id="locBtn" onclick="getLocation()" class="btn-loc">📍 Manzilni xaritadan aniqlash</button>
-                <button class="btn-send" onclick="sendOrder()" id="submitBtn">🚀 BUYURTMANI TASDIQLASH</button>
+                <div class="products-grid" id="prod-list"></div>
+
+                <div class="checkout-container" id="cart-section" style="display:none;">
+                    <div class="cart-box">
+                        <h3 style="margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom:15px;">🛒 Aqlli Savatcha</h3>
+                        
+                        <div id="cart-content">Savat bo'sh...</div>
+                        
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top: 1px solid #f1f5f9; padding-top:20px; margin-bottom: 25px;">
+                            <span style="font-weight:600; color:var(--text-gray);">Jami summa:</span>
+                            <h2 id="total-price" style="color: var(--text-dark); font-size: 24px;">0 so'm</h2>
+                        </div>
+                        
+                        <div class="delivery-options" id="delivery-options-container">
+                            </div>
+                        <div id="eco-info"></div>
+
+                        <label class="form-label">To'lov turi</label>
+                        <select id="pay-method" class="pay-select" onchange="toggleCardBox()">
+                            <option value="Naqd">💵 Naqd pul</option>
+                            <option value="Karta">💳 Karta o'tkazma</option>
+                        </select>
+                        
+                        <div id="card-details-box">
+                            <p style="font-size: 13px; color:var(--text-gray);">Kartaga pul o'tkazing:</p>
+                            <h3 style="color: var(--text-dark); margin: 8px 0; letter-spacing: 1px;">9801 6044 4804 6060</h3>
+                            <p style="font-weight:600; font-size: 13px; margin-bottom: 15px;">Ochildiyeva Mo'tabar</p>
+                            <button style="background:var(--primary); color:white; border:none; padding:6px 15px; border-radius:8px; font-size:12px; cursor:pointer;" onclick="copyCard()">Nusxa olish</button>
+                            
+                            <label class="form-label" style="color:var(--danger); margin-top:20px;">⚠️ To'lov chekini yuklang (Majburiy):</label>
+                            <input type="file" id="receipt-upload" accept="image/*" class="inp" style="border: 1px dashed var(--danger); background: var(--white);">
+                        </div>
+
+                        <label class="form-label">Telefon raqam</label>
+                        <input type="tel" id="user-phone" class="inp" placeholder="+998 90 123 45 67">
+                        
+                        <button id="locBtn" onclick="getLocation()" class="loc-btn">📍 Manzilni xaritadan tanlash</button>
+                        <div id="dist-info" style="margin-top: 15px; font-size: 13px; color: var(--primary); font-weight: 600; text-align: center; display: none;"></div>
+                        
+                        <button class="main-btn" onclick="sendOrder()" id="submitBtn">Buyurtmani tasdiqlash</button>
+                    </div>
+                </div>
             </div>
+
+            <div id="tracking-page" class="page-content" style="width: 100%; padding: 0;">
+                <h2 style="text-align: center; margin-bottom: 5px; font-weight: 700;" id="track-status">⏳ Kuryer yo'lda...</h2>
+                <p style="text-align: center; font-size: 14px; color: var(--text-gray); margin-bottom: 20px;" id="track-sub">Iltimos kuting, xarita yuklanmoqda.</p>
+                <div id="map"></div>
+                
+                <div style="display:flex; gap:10px; max-width: 400px; margin: 0 auto;">
+                    <button class="main-btn" onclick="location.reload()" style="flex:2; margin-top:0;">🏠 Asosiyga qaytish</button>
+                    <button class="main-btn" onclick="openComplaint()" style="flex:1; background:var(--danger); box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3); margin-top:0;">⚖️ Shikoyat</button>
+                </div>
+            </div>
+
+            <div id="complaint-page" class="page-content" style="padding: 0;">
+                <button class="back-btn" onclick="goBackToHome()">❮ Asosiyga qaytish</button>
+                <h2 style="margin-bottom: 10px; font-weight: 700; color: var(--danger);">⚖️ Rasmiy shikoyat</h2>
+                <p style="font-size: 13px; color: var(--text-gray); margin-bottom: 20px; line-height: 1.5;">Do'kon xizmati, sifati yoki mahsulot rasmdagidek chiqmagan bo'lsa, bizga xabar bering. Rasm orqali isbot majburiy!</p>
+
+                <div class="cart-box" style="border-top: 4px solid var(--danger);">
+                    <label class="form-label">Qaysi do'kon ustidan?</label>
+                    <input type="text" id="comp-shop" class="inp" placeholder="Masalan: Makro Urgut">
+
+                    <label class="form-label">Shikoyat mazmuni</label>
+                    <textarea id="comp-text" class="inp" rows="4" placeholder="Nima sodir bo'ldi? Batafsil yozing..."></textarea>
+
+                    <label class="form-label" style="color:var(--danger); margin-top:15px;">⚠️ Isbot uchun rasm yuklang (Majburiy):</label>
+                    <input type="file" id="comp-file" accept="image/*" class="inp" style="background: var(--white); border: 1px dashed var(--danger);">
+
+                    <label class="form-label">Sizning telefon raqamingiz</label>
+                    <input type="tel" id="comp-phone" class="inp" placeholder="+998 90 123 45 67">
+
+                    <button class="main-btn" style="background: var(--danger); box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3);" onclick="sendComplaint()" id="compBtn">Shikoyatni yuborish</button>
+                </div>
+            </div>
+
+        </div> 
+    </div> 
+
+    <nav class="bottom-nav">
+        <div class="b-nav-item active" onclick="location.reload()">
+            <i>🏠</i><span>Asosiy</span>
         </div>
-    </div>
-
-    <div id="tracking-page">
-        <div class="status-bar">
-            <b id="track-status" style="color: var(--main);">⏳ Buyurtma tasdiqlanmoqda...</b>
+        <div class="b-nav-item" onclick="openCategory('market', 'Tanlanganlar')">
+            <i>❤️</i><span>Sevimli</span>
         </div>
-        <div id="map"></div>
-        <button onclick="location.reload()" style="padding:20px; background:var(--main); color:white; border:none; font-weight:bold; cursor:pointer; font-size: 16px;">🏠 Bosh sahifaga qaytish</button>
-    </div>
+        <div class="b-nav-item" onclick="scrollToCart()">
+            <i>🛒</i><span>Savat</span>
+        </div>
+        <div class="b-nav-item" onclick="toggleSidebarMobile()">
+            <i>👤</i><span>Profil</span>
+        </div>
+    </nav>
 
-    <script>
-        const shopLat = 39.4063, shopLng = 67.2422; 
-        let cart = {}; let activeShopType = ""; let activeShopName = ""; let userLoc = null; 
-        let distKm = 0; let deliveryCost = 0; let estimatedTime = 0;
-        let deliveryType = 'tezkor';
-        let map, carMarker;
-        let currentRegion = 'urgut';
+</div>
 
-        // TO'LOV VA KARTA LOGIKASI
-        function toggleCardBox() {
-            const method = document.getElementById('pay-method').value;
-            const box = document.getElementById('card-details-box');
-            if(method === "Karta") {
-                box.style.display = "block";
-                if(navigator.vibrate) navigator.vibrate(40);
-            } else {
-                box.style.display = "none";
-            }
+<script>
+    /* ==========================================
+       LOGIKA QISMI 
+       ========================================== */
+    const shopLat = 39.4063, shopLng = 67.2422; 
+    let cart = {}; let activeShopType = ""; let activeShopName = ""; let userLoc = null; 
+    let distKm = 0; let deliveryCost = 0; let estimatedTime = 0; let deliveryType = 'tezkor';
+    let map, carMarker; let currentRegion = 'urgut';
+
+    // BAZALAR
+    const shopsData = {
+        'urgut': {
+            'market': [{n: "Makro Urgut", desc: "Supermarket", icon: "🛒"}, {n: "Havas", desc: "Arzon narxlar", icon: "🏪"}],
+            'restoran': [{n: "Osh Markazi", desc: "Haqiqiy oshi", icon: "🍚"}, {n: "KFC", desc: "Tez ovqat", icon: "🍗"}],
+            'texnika': [{n: "Texnomart", desc: "Muddatli to'lov", icon: "📺"}],
+            'qurilish': [{n: "Sement Zavod", desc: "Optom narx", icon: "🏭"}],
+            'parfyum': [{n: "Bellstore", desc: "Kosmetika", icon: "💄"}]
+        },
+        'samarqand': {
+            'market': [{n: "Korzinka", desc: "Sifatli mahsulot", icon: "🛒"}],
+            'restoran': [{n: "Samarqand Osh", desc: "Milliy taom", icon: "🍚"}],
+            'texnika': [{n: "MediaPark", desc: "Katta assortiment", icon: "📱"}],
+            'qurilish': [{n: "Stroy Market", desc: "Barcha mollari", icon: "🧱"}],
+            'parfyum': [{n: "Parfum Gallery", desc: "Original atirlar", icon: "✨"}]
+        },
+        'respublika': {
+            'market': [{n: "Korzinka Uz", desc: "Tarmoq", icon: "🛒"}],
+            'restoran': [{n: "Besh Qozon", desc: "Toshkent oshi", icon: "🍚"}],
+            'texnika': [{n: "Texnomart Uz", desc: "Respublika", icon: "📺"}],
+            'qurilish': [{n: "Qizilqum Sement", desc: "Zavod", icon: "🏭"}],
+            'parfyum': [{n: "Bellstore Uz", desc: "Tarmoq", icon: "💄"}]
         }
+    };
 
-        function copyCard() {
-            navigator.clipboard.writeText("980160444804606").then(() => {
-                alert("✅ Karta raqami muvaffaqiyatli nusxalandi!");
-            });
+    const itemsDB = {
+        'market': [{n:"Olma (kg)", p:15000, i:"https://images.unsplash.com/photo-1560806887-1e4cd0b6bcd6?w=200"}, {n:"Go'sht (kg)", p:95000, i:"https://images.unsplash.com/photo-1603048297172-c92544798d5e?w=200"}],
+        'restoran': [{n:"Palov (Osh)", p:30000, i:"https://images.unsplash.com/photo-1544025162-d76694265947?w=200"}, {n:"Shashlik", p:15000, i:"https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=200"}],
+        'texnika': [{n:"Televizor 32'", p:1500000, i:"https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=200"}],
+        'qurilish': [{n:"Sement (50kg)", p:45000, i:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=200"}],
+        'parfyum': [{n:"Dior Sauvage", p:450000, i:"https://images.unsplash.com/photo-1594035910387-fea47794261f?w=200"}]
+    };
+
+    // UI FUNKSIYALAR: Hamburger menyu
+    function toggleSidebar() {
+        if(window.innerWidth <= 768) {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebar-overlay-mobile').classList.toggle('active');
+        } else {
+            document.getElementById('sidebar').classList.toggle('closed');
+            document.getElementById('main-content').classList.toggle('expanded');
         }
+    }
+    
+    function toggleSidebarMobile() { 
+        if(window.innerWidth <= 768) toggleSidebar(); 
+    }
 
-        // HUDUD LOGIKASI
-        function setRegion(regionKey, regionName) {
-            currentRegion = regionKey;
-            document.getElementById('top-region-banner').innerText = `📍 Tanlangan hudud: ${regionName.toUpperCase()}`;
-            document.querySelectorAll('.sb-item').forEach(el => el.classList.remove('active-region'));
-            document.getElementById('reg-' + regionKey).classList.add('active-region');
-            cart = {}; updateCartUI(); goBackToHome(); toggleSidebar();
+    function hideAllPages() {
+        document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+    }
+
+    function setRegion(regionKey, regionName) {
+        currentRegion = regionKey;
+        document.getElementById('top-loc-text').innerText = regionName;
+        document.querySelectorAll('.region-card').forEach(el => {
+            el.classList.remove('active');
+            if(el.querySelector('.check-icon')) el.querySelector('.check-icon').style.display = 'none';
+        });
+        const activeCard = document.getElementById('reg-' + regionKey);
+        activeCard.classList.add('active');
+        activeCard.querySelector('.check-icon').style.display = 'block';
+        cart = {}; updateCartUI();
+    }
+
+    function openCategory(type, title) {
+        hideAllPages();
+        document.getElementById('shop-list-page').style.display = 'block';
+        document.getElementById('category-title').innerText = title;
+        
+        const shops = shopsData[currentRegion][type] || [];
+        document.getElementById('shops-container').innerHTML = shops.map(s => 
+            `<div class="region-card" onclick="openShop('${type}', '${s.n}')">
+                <div class="region-icon">${s.icon}</div>
+                <div class="region-info"><h4>${s.n}</h4><p>${s.desc}</p></div>
+                <div style="color:var(--primary); font-size:18px;">➔</div>
+            </div>`
+        ).join('');
+        document.getElementById('main-content').scrollTo(0,0);
+    }
+
+    function openShop(type, shopName) {
+        activeShopType = type; activeShopName = shopName; cart = {}; updateCartUI();
+        hideAllPages();
+        document.getElementById('shop-page').style.display = 'block';
+        document.getElementById('cart-section').style.display = 'block';
+        document.getElementById('shop-title').innerText = shopName;
+        
+        renderDeliveryOptions(); 
+        renderList(itemsDB[type] || []);
+        document.getElementById('main-content').scrollTo(0,0);
+    }
+
+    function goBackToHome() { hideAllPages(); document.getElementById('home-page').style.display = 'block'; document.getElementById('main-content').scrollTo(0,0);}
+    function goBackToShopList() { hideAllPages(); document.getElementById('shop-list-page').style.display = 'block'; document.getElementById('main-content').scrollTo(0,0);}
+    
+    function openComplaint() {
+        hideAllPages();
+        document.getElementById('complaint-page').style.display = 'block';
+        document.getElementById('main-content').scrollTo(0,0);
+    }
+
+    function scrollToCart() {
+        if(document.getElementById('shop-page').style.display === 'block') {
+            document.getElementById('cart-section').scrollIntoView({behavior: 'smooth'});
+        } else {
+            alert("Savatni ko'rish uchun avval biror do'konga kiring.");
         }
+    }
 
-        // DASTAFKA TURI
-        function setDeliveryType(type) {
-            deliveryType = type;
-            document.getElementById('opt-tezkor').classList.remove('active');
-            document.getElementById('opt-arzon').classList.remove('active');
-            document.getElementById('opt-' + type).classList.add('active');
-            document.getElementById('eco-info').style.display = type === 'arzon' ? 'block' : 'none';
-            if(userLoc) calculateDistAndCost();
-        }
+    function simulateAI() { 
+        let text = document.getElementById('ai-input').value.toLowerCase(); 
+        let items = itemsDB[activeShopType] || []; 
+        let filtered = text.length < 2 ? items : items.filter(i => i.n.toLowerCase().includes(text)); 
+        renderList(filtered); 
+    }
 
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-            if(navigator.vibrate) navigator.vibrate(20);
-        }
+    function renderList(itemsArray) {
+        const list = document.getElementById('prod-list');
+        if(itemsArray.length === 0) { list.innerHTML = `<p style="grid-column:1/-1;text-align:center;">Mahsulot topilmadi...</p>`; return;}
+        list.innerHTML = itemsArray.map(i => 
+            `<div class="product-card">
+                <div class="product-img-wrapper"><img src="${i.i}"></div>
+                <h4>${i.n}</h4>
+                <p>Sifatli mahsulot</p>
+                <div class="product-bottom">
+                    <span class="product-price">${i.p.toLocaleString()} s</span>
+                    <button class="add-to-cart-btn" onclick="addToCart('${i.n}', ${i.p})">+</button>
+                </div>
+            </div>`
+        ).join('');
+    }
 
-        function toggleTheme() { document.body.classList.toggle('dark-mode'); }
-
-        // BAZALAR
-        const shopsData = {
-            'urgut': {
-                'market': [{n: "Urgut Makro", desc: "Katta supermarket", icon: "🛒", rating: "⭐️ 4.9"}, {n: "Havas Urgut", desc: "Arzon narxlar", icon: "🏪", rating: "⭐️ 4.7"}],
-                'restoran': [{n: "Urgut Osh Markazi", desc: "Haqiqiy oshi", icon: "🍚", rating: "⭐️ 4.9"}, {n: "Chinor Choyxonasi", desc: "Shashlik", icon: "🥘", rating: "⭐️ 4.8"}],
-                'texnika': [{n: "Urgut Texnomart", desc: "Muddatli to'lov", icon: "📺", rating: "⭐️ 4.8"}],
-                'qurilish': [{n: "Urgut Sement", desc: "Zavoddan", icon: "🏭", rating: "⭐️ 4.9"}, {n: "Master Stroy", desc: "G'isht, shlakoblok", icon: "🧱", rating: "⭐️ 4.8"}],
-                'parfyum': [{n: "Urgut Bellstore", desc: "Kosmetika", icon: "💄", rating: "⭐️ 4.9"}]
-            },
-            'samarqand': {
-                'market': [{n: "Korzinka Samarqand", desc: "Zo'r sifat", icon: "🛒", rating: "⭐️ 4.9"}, {n: "Siyob Bozori", desc: "Mevalar", icon: "🍎", rating: "⭐️ 4.9"}],
-                'restoran': [{n: "Samarqand Osh Markazi", desc: "Mashhur osh", icon: "🍚", rating: "⭐️ 4.9"}, {n: "KFC Samarqand", desc: "Tovuqlar", icon: "🍗", rating: "⭐️ 4.7"}],
-                'texnika': [{n: "MediaPark Sam", desc: "Katta texnikalar", icon: "📱", rating: "⭐️ 4.7"}],
-                'qurilish': [{n: "Samarqand Stroy", desc: "Barcha mollari", icon: "🧱", rating: "⭐️ 4.8"}],
-                'parfyum': [{n: "Parfum Gallery Sam", desc: "Atirlar", icon: "✨", rating: "⭐️ 4.8"}]
-            },
-            'respublika': {
-                'market': [{n: "Korzinka (Toshkent)", desc: "Tarmoq", icon: "🛒", rating: "⭐️ 4.9"}],
-                'restoran': [{n: "Besh Qozon", desc: "Toshkent oshi", icon: "🍚", rating: "⭐️ 4.8"}],
-                'texnika': [{n: "Texnomart Uz", desc: "Respublika", icon: "📺", rating: "⭐️ 4.8"}],
-                'qurilish': [{n: "Qizilqum Sement", desc: "Zavod", icon: "🏭", rating: "⭐️ 4.9"}],
-                'parfyum': [{n: "Bellstore Uz", desc: "Tarmoq", icon: "💄", rating: "⭐️ 4.9"}]
-            }
-        };
-
-        const restoranItems = [{n:"Palov (Osh)", p:30000, tags:"issiq", i:"https://images.unsplash.com/photo-1544025162-d76694265947?w=200"}, {n:"Jiz-biz", p:65000, tags:"issiq go'sht", i:"https://images.unsplash.com/photo-1544025162-d76694265947?w=200"}, {n:"Shashlik", p:15000, tags:"go'sht", i:"https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=200"}];
-        const marketItems = [{n:"Olma (kg)", p:15000, tags:"meva", i:"https://images.unsplash.com/photo-1560806887-1e4cd0b6bcd6?w=200"}, {n:"Go'sht (kg)", p:95000, tags:"ro'zg'or", i:"https://images.unsplash.com/photo-1603048297172-c92544798d5e?w=200"}, {n:"Coca-Cola", p:14000, tags:"ichimlik", i:"https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200"}];
-        const texnikaItems = [{n:"Televizor 32'", p:1500000, tags:"texnika tv ekran", i:"https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=200"}, {n:"Dazmol Philips", p:350000, tags:"texnika dazmol", i:"https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?w=200"}];
-        const qurilishItems = [{n:"Sement (50kg)", p:45000, tags:"qurilish sement usta", i:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=200"}, {n:"Bo'yoq (3L)", p:35000, tags:"qurilish kraska rang", i:"https://images.unsplash.com/photo-1562259929-b7e181d8d002?w=200"}];
-        const parfyumItems = [{n:"Dior Sauvage", p:450000, tags:"atir parfyum erkak", i:"https://images.unsplash.com/photo-1594035910387-fea47794261f?w=200"}];
-
-        function openCategory(type, title) {
-            document.getElementById('home-page').style.display = 'none';
-            document.getElementById('shop-list-page').style.display = 'block';
-            document.getElementById('category-title').innerText = title;
-            const container = document.getElementById('shops-container');
-            const shops = shopsData[currentRegion][type] || [];
-            container.innerHTML = shops.map(s => `<div class="store-card" onclick="openShop('${type}', '${s.n}')"><div class="store-icon">${s.icon}</div><div class="store-info"><h3>${s.n}</h3><p>${s.desc}</p><div class="store-rating">${s.rating}</div></div></div>`).join('');
-        }
-
-        function openShop(type, shopName) {
-            activeShopType = type; activeShopName = shopName; cart = {}; updateCartUI();
-            document.getElementById('shop-list-page').style.display = 'none';
-            document.getElementById('shop-page').style.display = 'block';
-            document.getElementById('shop-title').innerText = shopName;
-            document.getElementById('ai-input').value = "";
-            const locBtn = document.getElementById('locBtn'); locBtn.innerText = "📍 Manzilni xaritadan aniqlash"; locBtn.style.background = "white"; locBtn.style.color = "var(--main)";
-            document.getElementById('dist-info').style.display = 'none'; userLoc = null;
-            renderItems();
-        }
-
-        function goBackToHome() { document.getElementById('shop-list-page').style.display = 'none'; document.getElementById('home-page').style.display = 'block'; }
-        function goBackToShopList() { document.getElementById('shop-page').style.display = 'none'; document.getElementById('shop-list-page').style.display = 'block'; }
-
-        function getActiveItems() {
-            if(activeShopType === 'market') return marketItems;
-            if(activeShopType === 'restoran') return restoranItems;
-            if(activeShopType === 'texnika') return texnikaItems;
-            if(activeShopType === 'qurilish') return qurilishItems;
-            if(activeShopType === 'parfyum') return parfyumItems; return [];
-        }
-
-        function simulateAI() { let text = document.getElementById('ai-input').value.toLowerCase(); let itemsToSearch = getActiveItems(); let filtered = text.length < 2 ? itemsToSearch : itemsToSearch.filter(i => i.tags.includes(text) || i.n.toLowerCase().includes(text)); renderList(filtered); }
-        function renderItems() { renderList(getActiveItems()); }
-        function renderList(itemsArray) {
-            const list = document.getElementById('prod-list');
-            if(itemsArray.length === 0) { list.innerHTML = `<p style="grid-column:1/-1;text-align:center;">Hech narsa topilmadi...</p>`; return;}
-            list.innerHTML = itemsArray.map(i => `<div class="card"><img src="${i.i}"><h4 style="margin:5px 0; color:var(--text);">${i.n}</h4><p style="color:var(--main); font-weight:bold;">${i.p.toLocaleString()} so'm</p><button class="add-btn" onclick="addToCart('${i.n}', ${i.p})">Savatga</button></div>`).join('');
-        }
-
-        function addToCart(name, price) { if (cart[name]) cart[name].q++; else cart[name] = { q: 1, p: price }; updateCartUI(); if(navigator.vibrate) navigator.vibrate(50); }
-        function removeFromCart(name) { if (cart[name]) { cart[name].q--; if(cart[name].q <= 0) delete cart[name]; updateCartUI(); if(navigator.vibrate) navigator.vibrate(30); } }
-
-        function updateCartUI() {
-            const box = document.getElementById('cart-content'); let html = "", subtotal = 0;
-            for(let n in cart) {
-                html += `<div class="cart-item"><span style="flex:1;"><b>${n}</b></span><div style="display:flex; align-items:center; gap:10px;"><button onclick="removeFromCart('${n}')" style="border:none; background:#ff4757; color:white; border-radius:5px; width:25px; height:25px; font-weight:bold; cursor:pointer;">-</button><span>x${cart[n].q}</span><button onclick="addToCart('${n}', ${cart[n].p})" style="border:none; background:#2ecc71; color:white; border-radius:5px; width:25px; height:25px; font-weight:bold; cursor:pointer;">+</button></div><b style="width:90px; text-align:right;">${(cart[n].q * cart[n].p).toLocaleString()}</b></div>`;
-                subtotal += cart[n].q * cart[n].p;
-            }
-            box.innerHTML = html || "Savat bo'sh...";
-            document.getElementById('total-price').innerText = "Jami: " + (subtotal + deliveryCost).toLocaleString() + " so'm";
-        }
-
-        function getLocation() {
-            if(navigator.vibrate) navigator.vibrate(40);
-            const locBtn = document.getElementById('locBtn'); locBtn.innerText = "⏳ Aniqlanmoqda...";
-            if (!navigator.geolocation) { useFallbackLocation(); return; }
-            navigator.geolocation.getCurrentPosition(
-                (pos) => { userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude }; calculateDistAndCost(); locBtn.innerText = "📍 Manzil muvaffaqiyatli aniqlandi!"; locBtn.style.background = "#2ecc71"; locBtn.style.color = "white"; }, 
-                (err) => { useFallbackLocation(); }, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-            );
-        }
-
-        function useFallbackLocation() {
-            userLoc = { lat: shopLat + 0.025, lng: shopLng + 0.025 }; 
-            calculateDistAndCost();
-            const locBtn = document.getElementById('locBtn'); locBtn.innerText = "📍 Demo manzil kiritildi!"; locBtn.style.background = "#f39c12"; locBtn.style.color = "white";
-        }
-
-        function calculateDistAndCost() {
-            let R = 6371; let dLat = (userLoc.lat - shopLat) * Math.PI / 180; let dLon = (userLoc.lng - shopLng) * Math.PI / 180;
-            let a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(shopLat * Math.PI / 180) * Math.cos(userLoc.lat * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
-            distKm = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            
-            let perKmCost = deliveryType === 'tezkor' ? 3000 : 1500;
-            let minCost = deliveryType === 'tezkor' ? 5000 : 3000;
-            
-            let calculatedCost = Math.round(distKm) * perKmCost;
-            deliveryCost = calculatedCost < minCost ? minCost : calculatedCost; 
-            
-            let prepTime = activeShopType === 'restoran' ? 20 : 5;
-            let travelTime = Math.ceil(distKm * 2.5);
-            let ecoDelay = deliveryType === 'arzon' ? 15 : 0; 
-            estimatedTime = prepTime + travelTime + ecoDelay;
-            
-            let delName = deliveryType === 'tezkor' ? '🚀 Tezkor' : '♻️ Arzon (Eco)';
-            
-            const info = document.getElementById('dist-info');
-            info.style.display = 'block';
-            info.innerHTML = `
-                <b style="color:#00838f; font-size:16px;">📍 Masofa va Narx hisoblandi!</b><br>
-                <div style="margin-top:8px; border-top:1px dashed #b2ebf2; padding-top:8px;">
-                    📏 Do'kongacha masofa: <b>${distKm.toFixed(1)} km</b><br>
-                    ⏱️ Tahminiy vaqt: <b style="color:#d35400;">~${estimatedTime} daqiqa</b><br>
-                    💸 Dastafka [${delName}]: <b style="color:var(--main); font-size:16px;">${deliveryCost.toLocaleString()} so'm</b>
+    // DINAMIK DASTAFKA LOGIKASI
+    function renderDeliveryOptions() {
+        const container = document.getElementById('delivery-options-container');
+        if (activeShopType === 'texnika' || activeShopType === 'qurilish') {
+            container.innerHTML = `
+                <div class="del-option active" id="opt-tezkor" onclick="setDeliveryType('tezkor')">
+                    <h4 style="font-size: 15px;">🚀 Tezkor</h4><p style="font-size: 12px; margin-top:4px;">2000 so'm/km</p>
+                </div>
+                <div class="del-option" id="opt-yuk" onclick="setDeliveryType('yuk')">
+                    <h4 style="font-size: 15px;">🚚 Yuk mashinasi</h4><p style="font-size: 12px; margin-top:4px;">3000 so'm/km</p>
                 </div>
             `;
-            updateCartUI();
+        } else {
+            container.innerHTML = `
+                <div class="del-option active" id="opt-tezkor" onclick="setDeliveryType('tezkor')">
+                    <h4 style="font-size: 15px;">🚀 Tezkor</h4><p style="font-size: 12px; margin-top:4px;">2000 so'm/km</p>
+                </div>
+                <div class="del-option" id="opt-arzon" onclick="setDeliveryType('arzon')">
+                    <h4 style="font-size: 15px;">♻️ Arzon (Eco)</h4><p style="font-size: 12px; margin-top:4px;">1000 so'm/km</p>
+                </div>
+            `;
         }
+        setDeliveryType('tezkor'); 
+    }
 
-        async function sendOrder() {
-            let phone = document.getElementById('user-phone').value;
-            let payMethod = document.getElementById('pay-method').value;
-            let fileInput = document.getElementById('receipt-upload');
+    function setDeliveryType(type) {
+        deliveryType = type;
+        document.querySelectorAll('.del-option').forEach(el => el.classList.remove('active'));
+        document.getElementById('opt-' + type).classList.add('active');
+        
+        const infoBox = document.getElementById('eco-info');
+        if (type === 'arzon') {
+            infoBox.style.display = 'block';
+            infoBox.innerHTML = "<b>ℹ️ Nega arzon?</b> Buyurtmangiz boshqa mijozlarning buyurtmalari bilan bir kuryerga biriktiriladi. Vaqt biroz ko'proq ketishi mumkin, lekin narxi <b>50% arzon</b> bo'ladi!";
+        } else if (type === 'yuk') {
+            infoBox.style.display = 'block';
+            infoBox.innerHTML = "<b>🚚 Yuk mashinasi:</b> Qurilish mollari va katta hajmli maishiy texnikalar uchun maxsus og'ir yuk mashinasi xizmati talab etiladi.";
+        } else {
+            infoBox.style.display = 'none';
+        }
+        if (userLoc) calculateDistAndCost(); 
+    }
 
-            if(!userLoc || !phone || Object.keys(cart).length === 0) { 
-                return alert("Iltimos, savatni to'ldiring, telefonni yozing va manzilni aniqlang!"); 
-            }
+    // SAVATCHA LOGIKASI
+    function addToCart(name, price) { if (cart[name]) cart[name].q++; else cart[name] = { q: 1, p: price }; updateCartUI(); }
+    function removeFromCart(name) { if (cart[name]) { cart[name].q--; if(cart[name].q <= 0) delete cart[name]; updateCartUI(); } }
 
-            // KARTA TANLANGANDA CHEK YUKLASH MAJBURIY (!)
-            if(payMethod === "Karta" && fileInput.files.length === 0) {
-                if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
-                document.getElementById('receipt-upload').style.borderColor = "red";
-                return alert("Iltimos, to'lov qilinganligi haqidagi chek rasmini yuklang!");
-            }
+    function updateCartUI() {
+        const box = document.getElementById('cart-content'); let html = "", subtotal = 0;
+        for(let n in cart) {
+            html += `<div class="cart-item">
+                <div class="cart-item-name">${n}</div>
+                <div style="display:flex; align-items:center; gap:20px;">
+                    <div class="cart-item-price">${(cart[n].q * cart[n].p).toLocaleString()} so'm</div>
+                    <div class="cart-controls">
+                        <button class="ctrl-btn" onclick="removeFromCart('${n}')">-</button>
+                        <span class="ctrl-qty">${cart[n].q}</span>
+                        <button class="ctrl-btn" style="color:var(--primary);" onclick="addToCart('${n}', ${cart[n].p})">+</button>
+                    </div>
+                </div>
+            </div>`;
+            subtotal += cart[n].q * cart[n].p;
+        }
+        box.innerHTML = html || "Savat bo'sh. Mahsulot qo'shing.";
+        document.getElementById('total-price').innerText = (subtotal + deliveryCost).toLocaleString() + " so'm";
+    }
 
-            document.getElementById('submitBtn').innerText = "⏳ Jo'natilmoqda...";
+    function toggleCardBox() {
+        const method = document.getElementById('pay-method').value;
+        document.getElementById('card-details-box').style.display = method === "Karta" ? "block" : "none";
+    }
+    function copyCard() { navigator.clipboard.writeText("9801604448046060").then(() => alert("Karta raqami nusxalandi!")); }
 
-            let orderDetails = ""; let itemsTotal = 0;
-            for(let n in cart) { orderDetails += `▪️ ${n} (x${cart[n].q}) - ${(cart[n].q * cart[n].p).toLocaleString()} so'm\n`; itemsTotal += cart[n].q * cart[n].p; }
+    // XARITA VA NARX HISOBLASH
+    function getLocation() {
+        const locBtn = document.getElementById('locBtn'); locBtn.innerText = "⏳ Aniqlanmoqda...";
+        setTimeout(() => { 
+            userLoc = { lat: shopLat + 0.025, lng: shopLng + 0.025 }; 
+            distKm = 3.5; 
+            calculateDistAndCost(); 
+            locBtn.innerText = "📍 Manzil tasdiqlandi"; locBtn.style.borderColor = "var(--primary)"; locBtn.style.color = "var(--primary)";
+        }, 1000);
+    }
 
-            let delLabel = deliveryType === 'tezkor' ? '🚀 TEZKOR' : '♻️ ARZON (ECO)';
+    function calculateDistAndCost() {
+        let perKmCost = 2000; 
+        if (deliveryType === 'arzon') perKmCost = 1000;
+        if (deliveryType === 'yuk') perKmCost = 3000;
 
-            let msg = `🛍 <b>YANGI BUYURTMA</b>\n`;
-            msg += `🌍 Hudud: ${currentRegion.toUpperCase()}\n`;
-            msg += `🏢 Do'kon: <b>${activeShopName}</b>\n`;
-            msg += `📦 Dastafka: <b>${delLabel}</b>\n`;
-            msg += `💳 To'lov turi: <b>${payMethod}</b>\n`;
-            msg += `📞 Tel: <code>${phone}</code>\n📍 Masofa: ${distKm.toFixed(1)} km\n`;
-            msg += `⏱ Vaqt: ~${estimatedTime} daqiqa\n\n`;
-            msg += `📋 <b>Mahsulotlar:</b>\n${orderDetails}\n🚕 Dastafka: ${deliveryCost.toLocaleString()} so'm\n`;
-            msg += `💰 <b>UMUMIY SUMMA: ${(itemsTotal + deliveryCost).toLocaleString()} so'm</b>\n\n`;
-            msg += `📍 <a href="http://googleusercontent.com/maps.google.com/?q=${userLoc.lat},${userLoc.lng}">Mijoz manzili (Xarita)</a>`;
+        let minCost = perKmCost * 2; 
+        deliveryCost = Math.max(Math.round(distKm) * perKmCost, minCost);
+        estimatedTime = (activeShopType === 'restoran' ? 20 : 5) + Math.ceil(distKm * 2.5) + (deliveryType === 'arzon' ? 15 : 0);
 
-            const token = "8799029662:AAGe0rydTjBmppKobgO5sbvigQTWBo0FnTc";
-            const admin = "6326941673";
+        document.getElementById('dist-info').style.display = "block";
+        document.getElementById('dist-info').innerHTML = `Masofa: ${distKm} km | Yetkazish: ${deliveryCost.toLocaleString()} so'm`;
+        updateCartUI();
+    }
 
-            try {
-                if(payMethod === "Karta" && fileInput.files.length > 0) {
-                    let formData = new FormData(); 
-                    formData.append("chat_id", admin); 
-                    formData.append("caption", msg); 
-                    formData.append("parse_mode", "HTML"); 
-                    formData.append("photo", fileInput.files[0]);
-                    await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: "POST", body: formData });
-                } else {
-                    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({chat_id: admin, text: msg, parse_mode: "HTML", disable_web_page_preview: false}) });
-                }
+    // TELEGRAMGA YUBORISH
+    async function sendOrder() {
+        let phone = document.getElementById('user-phone').value;
+        let payMethod = document.getElementById('pay-method').value;
+        let fileInput = document.getElementById('receipt-upload');
+
+        if(!userLoc || !phone || Object.keys(cart).length === 0) return alert("Savatni to'ldiring, telefonni yozing va manzilni tanlang!"); 
+        if(payMethod === "Karta" && fileInput.files.length === 0) {
+            document.getElementById('receipt-upload').style.borderColor = "red";
+            return alert("Iltimos, to'lov chekini yuklang!");
+        }
+        
+        document.getElementById('submitBtn').innerText = "⏳ Jo'natilmoqda...";
+        let orderDetails = ""; let itemsTotal = 0; let totalItemsCount = 0;
+        for(let n in cart) { 
+            orderDetails += `▪️ ${n} (x${cart[n].q}) - ${(cart[n].q * cart[n].p).toLocaleString()} so'm\n`; 
+            itemsTotal += cart[n].q * cart[n].p; 
+            totalItemsCount += cart[n].q;
+        }
+        
+        let delNameStr = deliveryType === 'yuk' ? '🚚 YUK MASHINASI' : (deliveryType === 'arzon' ? '♻️ ARZON (ECO)' : '🚀 TEZKOR');
+
+        let msg = `🛍 <b>YANGI BUYURTMA (Web/App)</b>\n🌍 Hudud: ${currentRegion.toUpperCase()}\n🏢 Do'kon: <b>${activeShopName}</b>\n📦 Dastafka: <b>${delNameStr}</b>\n💳 To'lov: <b>${payMethod}</b>\n📞 Tel: <code>${phone}</code>\n\n📋 <b>Mahsulotlar (${totalItemsCount} ta):</b>\n${orderDetails}\n🚕 Yetkazish: ${deliveryCost.toLocaleString()} so'm\n💰 <b>UMUMIY: ${(itemsTotal + deliveryCost).toLocaleString()} so'm</b>\n\n📍 <a href="http://googleusercontent.com/maps.google.com/?q=${userLoc.lat},${userLoc.lng}">Mijoz manzili</a>`;
+
+        const token = "8799029662:AAGe0rydTjBmppKobgO5sbvigQTWBo0FnTc"; const admin = "6326941673";
+        
+        try {
+            if(payMethod === "Karta" && fileInput.files.length > 0) {
+                await fetch(`https://api.telegram.org/bot${token}/sendMessage`, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({chat_id: admin, text: msg, parse_mode: "HTML"}) });
                 
-                confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
-                startTracking();
-            } catch(e) { alert("Xatolik! Internetni tekshiring."); document.getElementById('submitBtn').innerText = "🚀 BUYURTMANI TASDIQLASH"; }
+                let formData = new FormData(); 
+                formData.append("chat_id", admin); 
+                formData.append("caption", `💳 To'lov cheki.\n📞 Mijoz: ${phone}`); 
+                formData.append("photo", fileInput.files[0]);
+                await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: "POST", body: formData });
+            } else {
+                await fetch(`https://api.telegram.org/bot${token}/sendMessage`, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({chat_id: admin, text: msg, parse_mode: "HTML"}) });
+            }
+            confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
+            startTracking();
+        } catch(e) { alert("Internet aloqasini tekshiring!"); document.getElementById('submitBtn').innerText = "Buyurtmani tasdiqlash"; }
+    }
+
+    // SHIKOYAT YUBORISH LOGIKASI (Rasm Majburiy)
+    async function sendComplaint() {
+        let shop = document.getElementById('comp-shop').value;
+        let text = document.getElementById('comp-text').value;
+        let phone = document.getElementById('comp-phone').value;
+        let fileInput = document.getElementById('comp-file');
+
+        if(!shop || !text || !phone) return alert("Iltimos, do'kon nomi, shikoyat matni va telefonni yozing!");
+        
+        // MAJBURIY RASM TEKSHIRUVI
+        if(fileInput.files.length === 0) {
+            fileInput.style.borderColor = "red";
+            return alert("Iltimos, isbot sifatida rasmni yuklang!");
         }
 
-        function startTracking() {
-            document.getElementById('main-content').style.display = 'none';
-            document.getElementById('tracking-page').style.display = 'flex';
+        document.getElementById('compBtn').innerText = "⏳ Yuborilmoqda...";
+
+        let msg = `🚨 <b>YANGI SHIKOYAT (ISBOT BILAN)!</b>\n\n🏢 Do'kon: <b>${shop}</b>\n📞 Tel: <code>${phone}</code>\n\n📝 <b>Shikoyat mazmuni:</b>\n${text}`;
+
+        const token = "8799029662:AAGe0rydTjBmppKobgO5sbvigQTWBo0FnTc"; 
+        const admin = "6326941673";
+
+        try {
+            // Rasm majburiy bo'lgani uchun to'g'ridan-to'g'ri sendPhoto orqali yuboramiz
+            let formData = new FormData();
+            formData.append("chat_id", admin);
+            formData.append("caption", msg);
+            formData.append("parse_mode", "HTML");
+            formData.append("photo", fileInput.files[0]);
+            
+            await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, { method: "POST", body: formData });
+            
+            alert("✅ Shikoyatingiz isbot bilan birga muvaffaqiyatli yuborildi. Biz albatta chora ko'ramiz!");
+            
+            goBackToHome(); // Bosh sahifaga qaytish
+            
+            // Formalarni tozalash
+            document.getElementById('comp-shop').value = '';
+            document.getElementById('comp-text').value = '';
+            document.getElementById('comp-phone').value = '';
+            fileInput.value = '';
+            fileInput.style.borderColor = "var(--danger)";
+        } catch(e) {
+            alert("Internet aloqasini tekshiring!");
+        } finally {
+            document.getElementById('compBtn').innerText = "Shikoyatni yuborish";
+        }
+    }
+
+    function startTracking() {
+        hideAllPages();
+        document.getElementById('tracking-page').style.display = 'block';
+        document.getElementById('main-content').scrollTo(0,0);
+        
+        setTimeout(() => {
             map = L.map('map').setView([shopLat, shopLng], 14);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-            const carIcon = L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/744/744465.png', iconSize: [45, 45] });
-            const userIcon = L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', iconSize: [35, 35] });
-            L.marker([userLoc.lat, userLoc.lng], {icon: userIcon}).addTo(map).bindPopup("Sizning manzilingiz").openPopup();
+            const carIcon = L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/744/744465.png', iconSize: [40, 40] });
+            L.marker([userLoc.lat, userLoc.lng]).addTo(map).bindPopup("Sizning manzilingiz");
             carMarker = L.marker([shopLat, shopLng], {icon: carIcon}).addTo(map);
+            animateCar(shopLat, shopLng, userLoc.lat, userLoc.lng, 0, 100);
+        }, 500);
+    }
 
-            setTimeout(() => { document.getElementById('track-status').innerHTML = `🚕 Kuryer yo'lda <span style="font-size:14px; color:#888;">(Tahminan ${estimatedTime} daqiqa)</span>`; animateCar(shopLat, shopLng, userLoc.lat, userLoc.lng, 0, 300); }, 2500);
+    function animateCar(startLat, startLng, endLat, endLng, step, totalSteps) {
+        if (step <= totalSteps) {
+            let curLat = startLat + (endLat - startLat) * (step / totalSteps);
+            let curLng = startLng + (endLng - startLng) * (step / totalSteps);
+            carMarker.setLatLng([curLat, curLng]);
+            if(step % 5 === 0) map.panTo([curLat, curLng], {animate: true, duration: 0.2});
+            setTimeout(() => animateCar(startLat, startLng, endLat, endLng, step + 1, totalSteps), 50);
+        } else { 
+            document.getElementById('track-status').innerText = "✅ Kuryer yetib keldi!"; 
+            document.getElementById('track-sub').innerText = "Iltimos, buyurtmangizni qabul qilib oling.";
+            document.getElementById('track-sub').style.color = "var(--primary)";
+            document.getElementById('track-sub').style.fontWeight = "600";
         }
-
-        function animateCar(startLat, startLng, endLat, endLng, step, totalSteps) {
-            if (step <= totalSteps) {
-                let curLat = startLat + (endLat - startLat) * (step / totalSteps);
-                let curLng = startLng + (endLng - startLng) * (step / totalSteps);
-                carMarker.setLatLng([curLat, curLng]);
-                if(step % 5 === 0) map.panTo([curLat, curLng], {animate: true, duration: 0.2});
-                setTimeout(() => animateCar(startLat, startLng, endLat, endLng, step + 1, totalSteps), 30);
-            } else { document.getElementById('track-status').innerText = "✅ Kuryer manzilingizga yetib keldi!"; showSmsAlert(); }
-        }
-
-        function showSmsAlert() {
-            const sms = document.getElementById('sms-alert'); sms.classList.add('show');
-            if(navigator.vibrate) navigator.vibrate([400, 200, 400, 200, 600]);
-            carMarker.bindPopup("<b style='color:#00c853;font-size:16px;'>📍 Men yetib keldim!</b>").openPopup();
-            setTimeout(() => sms.classList.remove('show'), 10000); 
-        }
-    </script>
+    }
+</script>
 </body>
 </html>
